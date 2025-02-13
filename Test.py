@@ -2,7 +2,7 @@
 ## Imported from ChatGPT as example
 ## https://chatgpt.com/c/67a8234e-1350-800f-ac5f-e11519580c57
 
-## ***************DO NOT RUN FROM HERE**********************
+## ************* DO NOT RUN FROM VSCode *************************
 ## type:     python Test.py      in command prompt to run program
 
 import tkinter as tk

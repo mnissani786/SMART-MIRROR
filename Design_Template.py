@@ -52,10 +52,10 @@ class App(tk.Tk):
 
         def show_widgets():
             #content = Frame(root, padx=3, pady=3)
-            #####frame = Frame(root, bg="blue")
+            #frame = Frame(root, bg="blue")
             #frame = Frame(root, width=400, height=400, bg="blue")
             #frame.place(relx=.5, rely=.5, relwidth=0.95, relheight=0.95, anchor="center")
-            #####frame.grid(row=0, column=0, sticky=(N, S, E, W))
+            #frame.grid(row=0, column=0, sticky=(N, S, E, W))
             #content.grid(column=0, row=0, sticky=(N, S, E, W))
             #frame.grid(column=0, row=0, columnspan=3, rowspan=2, sticky=(N, S, E, W))            
 
@@ -64,20 +64,10 @@ class App(tk.Tk):
             #root.rowconfigure(0, weight=1)
 
             #These configure the rows and columns inside the root so they rezise relative to the window
-            for i in range(7): #creates 7 rows that can resize 1:1 with window
+            for i in range(7): #creates 7 rows that can resize with window
                 root.rowconfigure(i, weight=1)
-            for i in range(3): #creates 3 columns that can resize 1:1 with window
+            for i in range(3): #creates 3 columns that can resize with window
                 root.columnconfigure(i, weight=1) 
-
-            # for row in range(10):
-            #     for col in range(5):
-            #         tk.Button(
-            #             root,
-            #             text=f"Cell ({row}, {col})",
-            #             width=10,
-            #             height=5,
-            #             #anchor = "center"
-            #         ).grid(row=row, column=col)
 
             # Create and place all the widgets
             calendar_label = tk.Label(root, text="Calendar", font=("Arial", 20), bg="black", fg="white")

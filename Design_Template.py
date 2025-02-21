@@ -8,7 +8,7 @@ class App(tk.Tk):
 
         #this is making the display size and title of the app        
         root.title("Reflective Assistant")
-        root.geometry("500x700")
+        root.geometry("1080x1960")
         root.config(bg="black")
 
         #creating the clock display and its position

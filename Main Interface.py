@@ -41,8 +41,8 @@ def move_clock_up(y):
     global updating
     updating = False  # Stop updating during movement to prevent flickering
     if y > 200:
-        clock.place(y=y-5)
-        root.after(50, move_clock_up, y-5)
+        clock.place(y=y-1)
+        root.after(5, move_clock_up, y-1)
     else:
         updating = True  # Resume updates after movement
         update_time()

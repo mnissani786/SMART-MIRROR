@@ -1,6 +1,10 @@
 import customtkinter as ctk
 import time
 import calendar
+from API_Data import temp
+from API_Data import weather_color
+from API_Data import clouds
+from API_Data import quote
 
 # Initialize the main window
 ctk.set_appearance_mode("dark")  # Optional: Dark mode
@@ -16,8 +20,18 @@ clock.place(x=250, y=350, anchor="center")  # Exactly in the center of the scree
 
 updating = False  # Flag to control time updates
 
+#place qoute on screen
+Quote_write = ctk.CTkLabel(root,text = "",font = ("Aptos (Body)", 30), text_color = "white", wraplength= 450)
+Quote_write.place(x= 250, y= 350, anchor = "center")
+
+#new Idle screen
+def Idle_screen():
+    Quote_write.configure(text = str(quote))
+    root.after(10000, show_smile) #after 10 seconds show SMILE
+
 # Function to show "SMILE" first
 def show_smile():
+    Quote_write.configure(text = "") #removes quote from screen (need to improve technique for this
     clock.configure(text="SMILE")
     root.after(3000, start_clock)  # After 3 seconds, show date and time
 
@@ -71,7 +85,9 @@ def show_widgets():
     calendar_widget = ctk.CTkLabel(root, text=calendar.month_name[time.localtime().tm_mon], font=("Arial", 15))
     calendar_widget.place(x=50, y=80)
 
-    weather_widget = ctk.CTkLabel(root, text="Sunny, 25°C", font=("Arial", 15))
+    #weather_widget = ctk.CTkLabel(root, text="Sunny, 25°C", font=("Arial", 15))
+    #updated weather widget
+    weather_widget = ctk.CTkLabel(root, text= str(temp) + " Degrees Celsius\n" + str(clouds) + "% Cloudy", font=("Arial", 15), fg_color= weather_color, text_color= ("Black"))
     weather_widget.place(x=250, y=120)  # Positioned higher to prevent overlap with the clock
 
     todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", 15))
@@ -87,7 +103,7 @@ def show_widgets():
     ask_mirror_button = ctk.CTkButton(root, text="Ask Mirror", font=("Arial", 20), command=ask_mirror)
     ask_mirror_button.place(x=250, y=630)  # Positioned near the bottom but within the window
 
-# Start by showing "SMILE"
-show_smile()
+# Changed from 'Start by showing "SMILE"' to start by showing QUOTE
+Idle_screen()
 
 root.mainloop()

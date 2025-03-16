@@ -47,7 +47,7 @@ def changeLight(type, instance, value):
     print(response.text) #Debugging
 
 
-def main():
+# def main():
     ### Turns light on and off
     ### 0 = off, 1 = on
     # changeLight("devices.capabilities.on_off", "powerSwitch", 0)    #Off
@@ -71,6 +71,6 @@ def main():
     # changeLight("devices.capabilities.range", "brightness", 50)    #50% brightness
     # changeLight("devices.capabilities.range", "brightness", 100)   #100% brightness
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+    #main()
 

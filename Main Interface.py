@@ -5,6 +5,7 @@ from API_Data import temp
 from API_Data import weather_color
 from API_Data import clouds
 from API_Data import quote
+from goveeTest import *
 
 # Initialize the main window
 ctk.set_appearance_mode("dark")  # Optional: Dark mode
@@ -66,6 +67,77 @@ def move_clock_up(y):
 def ask_mirror():
     print("Ask Mirror Clicked!")
 
+# Closes the interactive pop-up widget, can be used for other interactive widgets
+def close_widget(frame):
+    frame.place_forget()    
+
+def smart_home_widget():
+    frame = ctk.CTkFrame(master=root, width = 200, height=200, fg_color="black", border_width=3, border_color="white")
+
+    #This places the smart home frame and all its widgets
+    frame.place(relx=.5, rely=.5, anchor="center", bordermode = 'outside')
+    for i in range(9):
+        frame.rowconfigure(i, weight=1)
+    for i in range(6):
+        frame.columnconfigure(i, weight=1)
+    
+    titleLabel = ctk.CTkLabel(frame, text="Govee Devices:", font=("Arial", 12), text_color="white", fg_color="black")
+    closeWindow = ctk.CTkButton(frame, text="X", font=("Arial", 12), text_color="white", fg_color="black", width=10, command=lambda: close_widget(frame))
+    devicesButton = ctk.CTkButton(frame, text="Lamp", font=("Arial", 10), text_color="white", fg_color="black", width=10)
+
+    powerLabel = ctk.CTkLabel(frame, text="Power:", font=("Arial", 12), text_color="white", fg_color="black")
+    onButton = ctk.CTkButton(frame, text="ON", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.on_off", "powerSwitch", 1))        
+    offButton = ctk.CTkButton(frame, text="OFF", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.on_off", "powerSwitch", 0))        
+
+    brightnessLabel = ctk.CTkLabel(frame, text="Brightness:", font=("Arial", 12), text_color="white", fg_color="black")
+    percent1Button = ctk.CTkButton(frame, text="1%", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.range", "brightness", 1))
+    percent25Button = ctk.CTkButton(frame, text="25%", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.range", "brightness", 25))
+    percent50Button = ctk.CTkButton(frame, text="50%", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.range", "brightness", 50))
+    percent75Button = ctk.CTkButton(frame, text="75%", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.range", "brightness", 75))
+    percent100Button = ctk.CTkButton(frame, text="100%", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.range", "brightness", 100))
+
+    whiteTempLabel = ctk.CTkLabel(frame, text="White Temperature:", font=("Arial", 12), text_color="white", fg_color="black")
+    coolTempButton = ctk.CTkButton(frame, text="Cool", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorTemperatureK", 9000))
+    pureTempButton = ctk.CTkButton(frame, text="Pure", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorTemperatureK", 5500))
+    warmTempButton = ctk.CTkButton(frame, text="Warm", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorTemperatureK", 2000))
+
+    colorLabel = ctk.CTkLabel(frame, text="Color:", font=("Arial", 12), text_color="white", fg_color="black")
+    redButton = ctk.CTkButton(frame, text="Red", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 0, 0))))
+    orangeButton = ctk.CTkButton(frame, text="Orange", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 127, 0))))
+    yellowButton = ctk.CTkButton(frame, text="Yellow", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 255, 0))))
+    greenButton = ctk.CTkButton(frame, text="Green", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 255, 0))))
+    blueButton = ctk.CTkButton(frame, text="Blue", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 0, 255))))
+    purpleButton = ctk.CTkButton(frame, text="Purple", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(160, 0, 255))))
+
+    titleLabel.grid(column = 0, row = 0, columnspan = 3, sticky='sw', pady = 3, padx = 13)
+    closeWindow.grid(column = 5, row = 0,  pady = 3, padx = 3)
+    devicesButton.grid(column = 0, row = 1, sticky='n', pady = 3, padx = 7)
+
+    powerLabel.grid(column = 0, row = 2, columnspan = 3, sticky='sw', padx = 13)
+    onButton.grid(column = 0, row = 3, sticky='n', pady = 3, padx = 3)
+    offButton.grid(column = 1, row = 3, sticky='n', pady = 3, padx = 3)
+
+    brightnessLabel.grid(column = 0, row = 4, columnspan = 3, sticky='sw', padx = 13)
+    percent1Button.grid(column = 0, row = 5, sticky='n', pady = 3, padx = 3)
+    percent25Button.grid(column = 1, row = 5, sticky='n', pady = 3, padx = 3)
+    percent50Button.grid(column = 2, row = 5, sticky='n', pady = 3, padx = 3)
+    percent75Button.grid(column = 3, row = 5, sticky='n', pady = 3, padx = 3)
+    percent100Button.grid(column = 4, row = 5, sticky='n', pady = 3, padx = 3)
+
+    whiteTempLabel.grid(column = 0, row = 6, columnspan = 3, sticky='sw', padx = 13)
+    coolTempButton.grid(column = 0, row = 7, sticky='n', pady = 3, padx = 3)
+    pureTempButton.grid(column = 1, row = 7, sticky='n', pady = 3, padx = 3)
+    warmTempButton.grid(column = 2, row = 7, sticky='n', pady = 3, padx = 3)
+
+    colorLabel.grid(column = 0, row = 8, columnspan = 3, sticky='sw', padx = 13)
+    redButton.grid(column = 0, row = 9, sticky='n', pady = 3, padx = 3)
+    orangeButton.grid(column = 1, row = 9, sticky='n', pady = 3, padx = 3)
+    yellowButton.grid(column = 2, row = 9, sticky='n', pady = 3, padx = 3)
+    greenButton.grid(column = 3, row = 9, sticky='n', pady = 3, padx = 3)
+    blueButton.grid(column = 4, row = 9, sticky='n', pady = 3, padx = 3)
+    purpleButton.grid(column = 5, row = 9, sticky='n', pady = 3, padx = 3) 
+        
+
 # Function to show widgets using CustomTkinter
 def show_widgets():
     # Adjusting coordinates based on window size
@@ -96,8 +168,12 @@ def show_widgets():
     music_widget = ctk.CTkLabel(root, text="Playing: Song XYZ", font=("Arial", 15))
     music_widget.place(x=50, y=430)
 
+    smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", 15), command=lambda: smart_home_widget())
+    smart_home_button.place(x=50, y=530)
+
     settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", 15))
     settings_widget.place(x=50, y=630)
+    
 
     # Adjusted position for the "Ask Mirror" button to fit within the display
     ask_mirror_button = ctk.CTkButton(root, text="Ask Mirror", font=("Arial", 20), command=ask_mirror)

@@ -5,6 +5,8 @@ from API_Data import temp
 from API_Data import weather_color
 from API_Data import clouds
 from API_Data import quote
+from API_Data import weather_symbol
+from PIL import Image
 from goveeTest import *
 
 # Initialize the main window
@@ -29,6 +31,11 @@ Quote_write.place(x= 250, y= 350, anchor = "center")
 def Idle_screen():
     Quote_write.configure(text = str(quote))
     root.after(10000, show_smile) #after 10 seconds show SMILE
+#symbol for cloudyness
+def place_sym():
+    weather_sym = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (80,80))
+    Wsym_label = ctk.CTkLabel(root, image=weather_sym, text="")
+    Wsym_label.place(x=380, y=95)
 
 # Function to show "SMILE" first
 def show_smile():
@@ -62,6 +69,7 @@ def move_clock_up(y):
         updating = True  # Resume updates after movement
         update_time()
         show_widgets()
+        place_sym()
 
 # Function to handle "Ask Mirror" button click
 def ask_mirror():

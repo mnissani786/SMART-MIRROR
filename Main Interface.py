@@ -67,33 +67,82 @@ def move_clock_up(y):
 def ask_mirror():
     print("Ask Mirror Clicked!")
 
-def ask_for_input(frame):   
-    ## terminal commands
-    # cd "C:\Users\cecma\OneDrive - oakland.edu\Sophmore Year\WInter\Sophmore Project\GitHub Clone 2-28\SMART-MIRROR"
-    # python "Main Interface.py"
+# Function to move the selection box
+def move_selection_box(frame, currentCol, currentRow, nextCol, nextRow):    
+    nextWidget = frame.grid_slaves(row=nextRow, column=nextCol)    # locates the widget using corresponding row and column, returns a list
+    nextWidget[0].configure(border_width=3, border_color='white')   # Accesses first widget in the list and turns the border white
 
-    selectedFrame = frame
-    
+    currentWidget = frame.grid_slaves(row=currentRow, column=currentCol) # Locates the current selected widget
+    currentWidget[0].configure(border_width=3, border_color='black')  # Changes the border to black
 
+    return currentCol, currentRow, nextCol, nextRow, nextWidget  #returns updated variables
+
+# Function to ask the user to enter a command for the selection box
+def selection_box_commands(frame):
+    currentCol = 0
+    currentRow = 1
+    nextCol = 0
+    nextRow = 0
+
+    gridSize = frame.grid_size() # gets grid size
+    print(f"Size of grid: rows={gridSize[1]}, columns={gridSize[0]}") #for debugging
+
+    currentSelectedWidget = frame.grid_slaves(row=currentRow, column=currentCol) #retrives button widget in top left corner
+    currentSelectedWidget[0].configure(border_width=3, border_color='white') #Visually selects it using a white border
+
+    print(f"Enter a command: up(u), down(d), left(l), right(r), select(s), exit(e): ") # Asks user for command input
     while (True):
-        command = input(f"Enter a command: ")
-        if (command == 'up'):
+        command = input(f"command: ")
+        if (command == 'up' or command == 'u'):
             print(f"Command entered: up")
-        elif(command == 'down'):
+            try: 
+                nextRow = currentRow -2 # moves selection to upper row, specific for smart home widget
+                currentCol, currentRow, nextCol, nextRow, currentSelectedWidget = move_selection_box(frame, currentCol, currentRow, nextCol, nextRow)
+                currentRow = nextRow
+            except:
+                if (nextRow < 0): 
+                    print(f"Out of grid range")
+            
+        elif(command == 'down' or command == 'd'):
             print(f"Command entered: down")
-        elif(command == 'left'):
-            print(f"Command entered: left")
-        elif(command == 'right'):
-            print(f"Command entered: right'")
-        elif(command == 'enter'):
-            print(f"Command entered: enter")
-        elif(command == 'exit'):
+            try: 
+                nextRow = currentRow +2 # moves selection to lower row, specific for smart home widget
+                currentCol, currentRow, nextCol, nextRow, currentSelectedWidget = move_selection_box(frame, currentCol, currentRow, nextCol, nextRow)
+                currentRow = nextRow                
+            except:
+                if (nextRow > gridSize[1]-1): 
+                    print(f"Out of grid range")    
+
+        elif(command == 'left' or command == 'l'):
+            print(f"Command entered: left")            
+            try:     
+                nextCol = currentCol -1 # moves selection to left column
+                currentCol, currentRow, nextCol, nextRow, currentSelectedWidget = move_selection_box(frame, currentCol, currentRow, nextCol, nextRow)
+                currentCol = nextCol
+            except:
+                if (nextCol < 0): 
+                    print(f"Out of grid range")
+
+        elif(command == 'right' or command == 'r'):
+            print(f"Command entered: right")
+            try:
+                nextCol = currentCol +1  # moves selection to right column
+                currentCol, currentRow, nextCol, nextRow, currentSelectedWidget = move_selection_box(frame, currentCol, currentRow, nextCol, nextRow)
+                currentCol = nextCol            
+            except:
+                if (nextCol > gridSize[0]-1): 
+                    print(f"Out of grid range")
+
+        elif(command == 'select' or command == 's'):
+            print(f"Command entered: select")
+            currentSelectedWidget[0].invoke()  # runs command associated with the currently selected button
+
+        elif(command == 'exit' or command == 'e'):
             print(f"Exiting loop")
             break
-        else:
-            print(f"not a command")
 
-    ##Figure out threadding so that this runs while app is running in background
+        else:
+            print(f"not a command")   
 
 
 # Closes the interactive pop-up widget, can be used for other interactive widgets
@@ -164,11 +213,10 @@ def smart_home_widget():
     yellowButton.grid(column = 2, row = 9, sticky='n', pady = 3, padx = 3)
     greenButton.grid(column = 3, row = 9, sticky='n', pady = 3, padx = 3)
     blueButton.grid(column = 4, row = 9, sticky='n', pady = 3, padx = 3)
-    purpleButton.grid(column = 5, row = 9, sticky='n', pady = 3, padx = 3) 
-    
+    purpleButton.grid(column = 5, row = 9, sticky='n', pady = 3, padx = 3)   
 
     #Figuring out selection box
-    ask_for_input(frame)
+    selection_box_commands(frame)
         
 
 # Function to show widgets using CustomTkinter
@@ -210,7 +258,8 @@ def show_widgets():
 
     # Adjusted position for the "Ask Mirror" button to fit within the display
     ask_mirror_button = ctk.CTkButton(root, text="Ask Mirror", font=("Arial", 20), command=ask_mirror)
-    ask_mirror_button.place(x=250, y=630)  # Positioned near the bottom but within the window
+    ask_mirror_button.place(x=250, y=630)  # Positioned near the bottom but within the window    
+
 
 # Changed from 'Start by showing "SMILE"' to start by showing QUOTE
 Idle_screen()

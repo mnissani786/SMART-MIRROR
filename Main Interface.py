@@ -30,7 +30,7 @@ Quote_write.place(x= 250, y= 350, anchor = "center")
 #new Idle screen
 def Idle_screen():
     Quote_write.configure(text = str(quote))
-    root.after(10000, show_smile) #after 10 seconds show SMILE
+    root.after(100, show_smile) #after 10 seconds show SMILE
 #symbol for cloudyness
 def place_sym():
     weather_sym = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (80,80))

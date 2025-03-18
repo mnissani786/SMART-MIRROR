@@ -31,12 +31,13 @@ if int(temp) > 20:
     weather_color = "red"
 if int(temp) > 34:
     weather_color = "dark red"
-#symbols for cloudiness **paths will need to be edited according to device and pic location***
-weather_symbol = "/Users/mariaecheverri/Documents/college/winter2025/soph project/PracticeAPI/sunny.webp" 
+
+#symbols for weather
+weather_symbol = "./sunny.webp" 
 if int(clouds) > 50:
-     weather_symbol = "/Users/mariaecheverri/Documents/college/winter2025/soph project/PracticeAPI/partlycloud.png"
+     weather_symbol = "./partlycloud.png"
 if int(clouds) == 100:
-     weather_symbol = "/Users/mariaecheverri/Documents/college/winter2025/soph project/PracticeAPI/Cloud_Icon.png"
+     weather_symbol = "./Cloud_Icon.png"
 
 """Quotes"""
 api_url = 'https://api.api-ninjas.com/v1/quotes'

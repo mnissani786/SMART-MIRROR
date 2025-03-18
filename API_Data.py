@@ -33,11 +33,11 @@ if int(temp) > 34:
     weather_color = "dark red"
 
 #symbols for weather
-weather_symbol = "./sunny.webp" 
+weather_symbol = "./images/sunny.webp" 
 if int(clouds) > 50:
-     weather_symbol = "./partlycloud.png"
+     weather_symbol = "./images/partlycloud.png"
 if int(clouds) == 100:
-     weather_symbol = "./Cloud_Icon.png"
+     weather_symbol = "./images/Cloud_Icon.png"
 
 """Quotes"""
 api_url = 'https://api.api-ninjas.com/v1/quotes'

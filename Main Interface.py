@@ -94,9 +94,11 @@ def update_time():
         clock.configure(text=f"{current_time}\n{current_date}")
         clock.after(1000, update_time)  # Keep updating every second
 
+widgets_shown = False
+
 # Function to move the clock up smoothly from y=350 to y=200
 def move_clock_up(y):
-    global updating
+    global updating, widgets_shown
     updating = False  # Stop updating during movement to prevent flickering
     if y > 200:
         clock.place(y=y-1)
@@ -104,8 +106,10 @@ def move_clock_up(y):
     else:
         updating = True  # Resume updates after movement
         update_time()
-        show_widgets()
-        place_sym()
+        if widgets_shown == False:
+            show_widgets()
+            place_sym()
+            widgets_shown = True
 
 # Function to handle "Ask Mirror" button click
 def ask_mirror():
@@ -198,51 +202,56 @@ def hide_todo_list(event):
     if todo_frame.winfo_ismapped():  # Only hide if it is currently visible
         todo_frame.place_forget()
 
+# List of widgets to display. This makes it easy to initialize the labels all at once
+widgets = [
+    {"text": "Calendar", "x": 50, "y": 50},
+    {"text": "Weather", "x": 250, "y": 50},
+    {"text": "To-Do List", "x": 50, "y": 200},
+    {"text": "Music", "x": 50, "y": 400},
+    {"text": "Settings", "x": 50, "y": 600},
+]
+
+precreated_widgets = {}
+for widget in widgets:
+    precreated_widgets[widget["text"]] = ctk.CTkLabel(
+        root, text=widget["text"], font=("Arial", 20), text_color="white"
+    )
+
+# Create widgets once
+calendar_widget = ctk.CTkLabel(root, text=calendar.month_name[time.localtime().tm_mon], font=("Arial", 15))
+weather_widget = ctk.CTkLabel(root, text=f"{temp} Degrees Celsius\n{clouds}% Cloudy", font=("Arial", 15), fg_color=weather_color, text_color="Black")
+todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", 15), text_color="white")
+# todo_widget.pack(pady=10, padx=20, anchor="w")  # Left-align with padding
+todo_widget.bind("<Button-1>", lambda e: toggle_todo_list())  # Make the To-Do list clickable
+music_widget = ctk.CTkLabel(root, text="Playing: Song XYZ", font=("Arial", 15))
+smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", 15), command=lambda: smart_home_widget())
+settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", 15))
+ask_mirror_button = ctk.CTkButton(root, text="Ask Mirror", font=("Arial", 20), command=ask_mirror)
+
 # Function to show widgets using CustomTkinter
 def show_widgets():
-    # Adjusting coordinates based on window size
-    widgets = [
-        {"text": "Calendar", "x": 50, "y": 50},
-        {"text": "Weather", "x": 250, "y": 50},
-        {"text": "To-Do List", "x": 50, "y": 200},
-        {"text": "Music", "x": 50, "y": 400},
-        {"text": "Settings", "x": 50, "y": 600},
-    ]
+    # updated code so widgets arent re-initialized over and over again. The reason
+    # everything was taking so long before is that every time show_widgets() was
+    # called, it was re-initializing the widgets. Now, the widgets are only initialized
+    # once and then updated as needed.
+        
+    global shown
+    shown = False
+    if not shown:  # Only place widgets if they haven't been shown yet
+        for widget in widgets:
+            label = precreated_widgets[widget["text"]]
+            label.place(x=widget["x"], y=widget["y"])  # Place pre-created widgets
 
-    for widget in widgets:
-        label = ctk.CTkLabel(root, text=widget["text"], font=("Arial", 20), text_color="white")
-        label.place(x=widget["x"], y=widget["y"])
+        # Place other widgets
+        calendar_widget.place(x=50, y=80)
+        weather_widget.place(x=250, y=120)
+        todo_widget.place(x=50, y=230)
+        music_widget.place(x=50, y=430)
+        smart_home_button.place(x=50, y=530)
+        settings_widget.place(x=50, y=630)
+        ask_mirror_button.place(x=250, y=630)
 
-    # Creating functional widgets with adjusted coordinates
-    calendar_widget = ctk.CTkLabel(root, text=calendar.month_name[time.localtime().tm_mon], font=("Arial", 15))
-    calendar_widget.place(x=50, y=80)
-
-    #weather_widget = ctk.CTkLabel(root, text="Sunny, 25°C", font=("Arial", 15))
-    #updated weather widget
-    weather_widget = ctk.CTkLabel(root, text= str(temp) + " Degrees Celsius\n" + str(clouds) + "% Cloudy", font=("Arial", 15), fg_color= weather_color, text_color= ("Black"))
-    weather_widget.place(x=250, y=120)  # Positioned higher to prevent overlap with the clock
-
-    # To-Do List Widget with click-to-expand functionality
-    todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", 15), text_color="white")
-    todo_widget.pack(pady=10, padx=20, anchor="w")  # Left-align with padding
-    todo_widget.place(x=50, y=230)
-    todo_widget.bind("<Button-1>", lambda e: toggle_todo_list())  # Make the To-Do list clickable
-
-    # Music widget
-    music_widget = ctk.CTkLabel(root, text="Playing: Song XYZ", font=("Arial", 15))
-    music_widget.place(x=50, y=430)
-
-    smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", 15), command=lambda: smart_home_widget())
-    smart_home_button.place(x=50, y=530)
-
-    # Settings widget
-    settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", 15))
-    settings_widget.place(x=50, y=630)
-
-    # "Ask Mirror" button
-    global ask_mirror_button 
-    ask_mirror_button = ctk.CTkButton(root, text="Ask Mirror", font=("Arial", 20), command=ask_mirror)
-    ask_mirror_button.place(x=250, y=630)  # Positioned near the bottom but within the window
+        shown = True
 
 # Mini-screen for the To-Do List (Initially hidden)
 todo_frame = ctk.CTkFrame(root, width=200, height=300, fg_color="black")  # Adjust width to suit the content

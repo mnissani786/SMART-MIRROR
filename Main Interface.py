@@ -5,6 +5,7 @@ from API_Data import temp
 from API_Data import weather_color
 from API_Data import clouds
 from API_Data import quote
+from API_Data import weather_symbol
 from PIL import Image, ImageTk
 import imageio  # For video playback
 from goveeTest import *
@@ -44,7 +45,7 @@ def Idle_screen():
 
 #symbol for cloudyness
 def place_sym():
-    weather_sym = ctk.CTkImage(dark_image= Image.open(weather_sym), size= (80,80))
+    weather_sym = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (80,80))
     Wsym_label = ctk.CTkLabel(root, image=weather_sym, text="")
     Wsym_label.place(x=380, y=95)
 
@@ -237,8 +238,8 @@ def show_widgets():
     ask_mirror_button.place(x=250, y=630)  # Positioned near the bottom but within the window
 
 # Mini-screen for the To-Do List (Initially hidden)
-todo_frame = ctk.CTkFrame(root, width=200, height=300)  # Adjust width to suit the content
-todo_canvas = ctk.CTkCanvas(todo_frame, width=180, height=280)  # A canvas for scrolling
+todo_frame = ctk.CTkFrame(root, width=200, height=300, fg_color="black", border_color="white", border_width=3)  # Adjust width to suit the content
+todo_canvas = ctk.CTkCanvas(todo_frame, width=180, height=280, bg='black')  # A canvas for scrolling
 todo_scrollbar = ctk.CTkScrollbar(todo_frame, orientation="vertical", command=todo_canvas.yview)
 todo_scrollbar.pack(side="right", fill="y")
 todo_canvas.pack(side="left", fill="both", expand=True)

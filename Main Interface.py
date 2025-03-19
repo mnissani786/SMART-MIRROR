@@ -9,6 +9,7 @@ from PIL import Image, ImageTk
 import imageio  # For video playback
 from goveeTest import *
 
+
 # Initialize the main window
 ctk.set_appearance_mode("dark")  # Optional: Dark mode
 ctk.set_default_color_theme("blue")  # Optional: Default theme

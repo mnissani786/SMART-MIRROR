@@ -186,6 +186,7 @@ def toggle_todo_list():
         todo_frame.place_forget()
     else:
         todo_frame.place(x=150, y=230)  # Display the mini-screen to the right of the "To-Do List" widget
+        todo_frame.lift()  # Bring the mini-screen to the front
 
 # Function to hide the To-Do mini-screen when clicking on the main window
 def hide_todo_list(event):
@@ -238,7 +239,7 @@ def show_widgets():
     ask_mirror_button.place(x=250, y=630)  # Positioned near the bottom but within the window
 
 # Mini-screen for the To-Do List (Initially hidden)
-todo_frame = ctk.CTkFrame(root, width=200, height=300, fg_color="black", border_color="white", border_width=3)  # Adjust width to suit the content
+todo_frame = ctk.CTkFrame(root, width=200, height=300, fg_color="black")  # Adjust width to suit the content
 todo_canvas = ctk.CTkCanvas(todo_frame, width=180, height=280, bg='black')  # A canvas for scrolling
 todo_scrollbar = ctk.CTkScrollbar(todo_frame, orientation="vertical", command=todo_canvas.yview)
 todo_scrollbar.pack(side="right", fill="y")

@@ -5,8 +5,8 @@ from API_Data import temp
 from API_Data import weather_color
 from API_Data import clouds
 from API_Data import quote
-from API_Data import weather_symbol
-from PIL import Image
+from PIL import Image, ImageTk
+import imageio  # For video playback
 from goveeTest import *
 
 # Initialize the main window
@@ -15,33 +15,66 @@ ctk.set_default_color_theme("blue")  # Optional: Default theme
 
 root = ctk.CTk()
 root.title("Reflective Assistant")
-
 root.geometry("500x700")
+
+# Sample list of tasks for the To-Do widget
+tasks = [
+    "1. Study",
+    "2. Work on Project",
+    "3. Exercise",
+    "4. Read a book",
+    "5. Attend meeting"
+]
+
 # Create the clock label
 clock = ctk.CTkLabel(root, font=("Aptos (Body)", 30), text_color="white")
 clock.place(x=250, y=350, anchor="center")  # Exactly in the center of the screen
 
 updating = False  # Flag to control time updates
 
-#place qoute on screen
-Quote_write = ctk.CTkLabel(root,text = "",font = ("Aptos (Body)", 30), text_color = "white", wraplength= 450)
-Quote_write.place(x= 250, y= 350, anchor = "center")
+# Place quote on screen
+Quote_write = ctk.CTkLabel(root, text="", font=("Aptos (Body)", 30), text_color="white", wraplength=450)
+Quote_write.place(x=250, y=350, anchor="center")
 
-#new Idle screen
+# New Idle screen
 def Idle_screen():
-    Quote_write.configure(text = str(quote))
-    root.after(100, show_smile) #after 10 seconds show SMILE
+    Quote_write.configure(text=str(quote))
+    root.after(5000, show_smile)  # After 10 seconds, show SMILE
+
 #symbol for cloudyness
 def place_sym():
-    weather_sym = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (80,80))
+    weather_sym = ctk.CTkImage(dark_image= Image.open(weather_sym), size= (80,80))
     Wsym_label = ctk.CTkLabel(root, image=weather_sym, text="")
     Wsym_label.place(x=380, y=95)
 
 # Function to show "SMILE" first
 def show_smile():
-    Quote_write.configure(text = "") #removes quote from screen (need to improve technique for this
-    clock.configure(text="SMILE")
-    root.after(3000, start_clock)  # After 3 seconds, show date and time
+    Quote_write.configure(text="")  # Removes quote from screen (need to improve technique for this)
+    play_video()
+    root.after(16000, start_clock)  # After 10 seconds, show date and time
+
+# Function to play video before showing widgets
+def play_video():
+    video_label = ctk.CTkLabel(root, text="")  # Create a label to hold video frames
+    video_label.place(x=0, y=0, relwidth=1, relheight=1)  # Make video cover full screen
+
+    # Load the video file (use a path to your video file)
+    video_path = "Neon Smile.mp4"  # Replace this with the path to your video file
+    video = imageio.get_reader(video_path)
+
+    def stream_video():
+        for frame in video:
+            frame_image = Image.fromarray(frame)  # Convert frame to image
+            frame_image = frame_image.resize((500, 700), Image.Resampling.LANCZOS)  # Resize to fit screen
+            frame_photo = ImageTk.PhotoImage(frame_image)
+            video_label.configure(image=frame_photo)
+            video_label.image = frame_photo
+            root.update()  # Update the root window
+            time.sleep(0.03)  # Control playback speed (~30 fps)
+
+        video_label.destroy()  # Remove video label after playback
+
+    root.after(0, stream_video)
 
 # Function to start showing date and time
 def start_clock():
@@ -144,7 +177,18 @@ def smart_home_widget():
     greenButton.grid(column = 3, row = 9, sticky='n', pady = 3, padx = 3)
     blueButton.grid(column = 4, row = 9, sticky='n', pady = 3, padx = 3)
     purpleButton.grid(column = 5, row = 9, sticky='n', pady = 3, padx = 3) 
-        
+
+# Function to show/hide the To-Do list mini-screen
+def toggle_todo_list():
+    if todo_frame.winfo_ismapped():  # If mini-screen is visible, hide it
+        todo_frame.place_forget()
+    else:
+        todo_frame.place(x=150, y=230)  # Display the mini-screen to the right of the "To-Do List" widget
+
+# Function to hide the To-Do mini-screen when clicking on the main window
+def hide_todo_list(event):
+    if todo_frame.winfo_ismapped():  # Only hide if it is currently visible
+        todo_frame.place_forget()
 
 # Function to show widgets using CustomTkinter
 def show_widgets():
@@ -170,22 +214,55 @@ def show_widgets():
     weather_widget = ctk.CTkLabel(root, text= str(temp) + " Degrees Celsius\n" + str(clouds) + "% Cloudy", font=("Arial", 15), fg_color= weather_color, text_color= ("Black"))
     weather_widget.place(x=250, y=120)  # Positioned higher to prevent overlap with the clock
 
-    todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", 15))
+    # To-Do List Widget with click-to-expand functionality
+    todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", 15), text_color="white")
+    todo_widget.pack(pady=10, padx=20, anchor="w")  # Left-align with padding
     todo_widget.place(x=50, y=230)
+    todo_widget.bind("<Button-1>", lambda e: toggle_todo_list())  # Make the To-Do list clickable
 
+    # Music widget
     music_widget = ctk.CTkLabel(root, text="Playing: Song XYZ", font=("Arial", 15))
     music_widget.place(x=50, y=430)
 
     smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", 15), command=lambda: smart_home_widget())
     smart_home_button.place(x=50, y=530)
 
+    # Settings widget
     settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", 15))
     settings_widget.place(x=50, y=630)
-    
 
-    # Adjusted position for the "Ask Mirror" button to fit within the display
+    # "Ask Mirror" button
     ask_mirror_button = ctk.CTkButton(root, text="Ask Mirror", font=("Arial", 20), command=ask_mirror)
     ask_mirror_button.place(x=250, y=630)  # Positioned near the bottom but within the window
+
+# Mini-screen for the To-Do List (Initially hidden)
+todo_frame = ctk.CTkFrame(root, width=200, height=300)  # Adjust width to suit the content
+todo_canvas = ctk.CTkCanvas(todo_frame, width=180, height=280)  # A canvas for scrolling
+todo_scrollbar = ctk.CTkScrollbar(todo_frame, orientation="vertical", command=todo_canvas.yview)
+todo_scrollbar.pack(side="right", fill="y")
+todo_canvas.pack(side="left", fill="both", expand=True)
+todo_canvas.configure(yscrollcommand=todo_scrollbar.set)
+
+# Scrollable content inside the mini-screen
+todo_inner_frame = ctk.CTkFrame(todo_canvas)
+todo_inner_frame_id = todo_canvas.create_window((0, 0), window=todo_inner_frame, anchor="nw")
+
+# Insert tasks into the scrollable frame as labels
+for task in tasks:
+    task_label = ctk.CTkLabel(todo_inner_frame, text=task, font=("Arial", 14))
+    task_label.pack(pady=5, padx=10, anchor="w")  # Anchor to the left side for alignment
+
+# Update scroll region to support scrolling
+def update_scroll_region(event):
+    todo_canvas.configure(scrollregion=todo_canvas.bbox("all"))
+
+todo_inner_frame.bind("<Configure>", update_scroll_region)
+
+# Initially hide the mini-screen
+todo_frame.place_forget()
+
+# Bind a click event on the main window to hide the To-Do mini-screen
+root.bind("<Button-1>", hide_todo_list)
 
 # Changed from 'Start by showing "SMILE"' to start by showing QUOTE
 Idle_screen()

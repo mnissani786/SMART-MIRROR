@@ -7,6 +7,7 @@ from API_Data import clouds
 from API_Data import quote
 from API_Data import weather_symbol
 from PIL import Image, ImageTk
+from speech import *
 import imageio  # For video playback
 from goveeTest import *
 
@@ -108,6 +109,10 @@ def move_clock_up(y):
 
 # Function to handle "Ask Mirror" button click
 def ask_mirror():
+    ask_mirror_button.configure(text="Listening...")  # Change button text
+    ask_mirror_button.update_idletasks()  # Update the button text immediately
+    get_audio()
+    ask_mirror_button.configure(text="Ask Mirror")  # Restore button text
     print("Ask Mirror Clicked!")
 
 # Closes the interactive pop-up widget, can be used for other interactive widgets
@@ -235,6 +240,7 @@ def show_widgets():
     settings_widget.place(x=50, y=630)
 
     # "Ask Mirror" button
+    global ask_mirror_button 
     ask_mirror_button = ctk.CTkButton(root, text="Ask Mirror", font=("Arial", 20), command=ask_mirror)
     ask_mirror_button.place(x=250, y=630)  # Positioned near the bottom but within the window
 

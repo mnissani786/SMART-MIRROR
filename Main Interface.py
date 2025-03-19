@@ -18,7 +18,7 @@ ctk.set_default_color_theme("blue")  # Optional: Default theme
 
 root = ctk.CTk()
 root.title("Reflective Assistant")
-root.geometry("500x700")
+root.geometry("1080x1920")
 
 # Sample list of tasks for the To-Do widget
 tasks = [
@@ -30,14 +30,14 @@ tasks = [
 ]
 
 # Create the clock label
-clock = ctk.CTkLabel(root, font=("Aptos (Body)", 30), text_color="white")
-clock.place(x=250, y=350, anchor="center")  # Exactly in the center of the screen
+clock = ctk.CTkLabel(root, font=("Aptos (Body)", 72), text_color="white")
+clock.place(x=540, y=960, anchor="center")  # Exactly in the center of the screen
 
 updating = False  # Flag to control time updates
 
 # Place quote on screen
-Quote_write = ctk.CTkLabel(root, text="", font=("Aptos (Body)", 30), text_color="white", wraplength=450)
-Quote_write.place(x=250, y=350, anchor="center")
+Quote_write = ctk.CTkLabel(root, text="", font=("Aptos (Body)", 72), text_color="white", wraplength=450)
+Quote_write.place(x=540, y=960, anchor="center")
 
 # New Idle screen
 def Idle_screen():
@@ -46,9 +46,9 @@ def Idle_screen():
 
 #symbol for cloudyness
 def place_sym():
-    weather_sym = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (80,80))
+    weather_sym = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (160,160))
     Wsym_label = ctk.CTkLabel(root, image=weather_sym, text="")
-    Wsym_label.place(x=380, y=95)
+    Wsym_label.place(x=820, y=261)
 
 # Function to show "SMILE" first
 def show_smile():
@@ -59,7 +59,7 @@ def show_smile():
 # Function to play video before showing widgets
 def play_video():
     video_label = ctk.CTkLabel(root, text="")  # Create a label to hold video frames
-    video_label.place(x=0, y=0, relwidth=1, relheight=1)  # Make video cover full screen
+    video_label.place(x=0.5, y=0.5, relwidth=1, relheight=1)  # Make video cover full screen
 
     # Load the video file (use a path to your video file)
     video_path = "Neon Smile.mp4"  # Replace this with the path to your video file
@@ -68,7 +68,7 @@ def play_video():
     def stream_video():
         for frame in video:
             frame_image = Image.fromarray(frame)  # Convert frame to image
-            frame_image = frame_image.resize((500, 700), Image.Resampling.LANCZOS)  # Resize to fit screen
+            frame_image = frame_image.resize((1080, 1920), Image.Resampling.LANCZOS)  # Resize to fit screen
             frame_photo = ImageTk.PhotoImage(frame_image)
             video_label.configure(image=frame_photo)
             video_label.image = frame_photo
@@ -84,7 +84,7 @@ def start_clock():
     global updating
     updating = True  # Enable updating
     update_time()
-    root.after(3000, move_clock_up, 350)  # Move clock up after 3 seconds
+    root.after(3000, move_clock_up, 960)  # Move clock up after 3 seconds
 
 # Function to update time (only if updating is enabled)
 def update_time():
@@ -100,7 +100,7 @@ widgets_shown = False
 def move_clock_up(y):
     global updating, widgets_shown
     updating = False  # Stop updating during movement to prevent flickering
-    if y > 200:
+    if y > 549:
         clock.place(y=y-1)
         root.after(5, move_clock_up, y-1)
     else:
@@ -124,7 +124,7 @@ def close_widget(frame):
     frame.place_forget()    
 
 def smart_home_widget():
-    frame = ctk.CTkFrame(master=root, width = 200, height=200, fg_color="black", border_width=3, border_color="white")
+    frame = ctk.CTkFrame(master=root, width = 500, height=500, fg_color="black", border_width=3, border_color="white")
 
     #This places the smart home frame and all its widgets
     frame.place(relx=.5, rely=.5, anchor="center", bordermode = 'outside')
@@ -133,33 +133,33 @@ def smart_home_widget():
     for i in range(6):
         frame.columnconfigure(i, weight=1)
     
-    titleLabel = ctk.CTkLabel(frame, text="Govee Devices:", font=("Arial", 12), text_color="white", fg_color="black")
-    closeWindow = ctk.CTkButton(frame, text="X", font=("Arial", 12), text_color="white", fg_color="black", width=10, command=lambda: close_widget(frame))
-    devicesButton = ctk.CTkButton(frame, text="Lamp", font=("Arial", 10), text_color="white", fg_color="black", width=10)
+    titleLabel = ctk.CTkLabel(frame, text="Govee Devices:", font=("Arial", 24), text_color="white", fg_color="black")
+    closeWindow = ctk.CTkButton(frame, text="X", font=("Arial", 24), text_color="white", fg_color="black", width=20, command=lambda: close_widget(frame))
+    devicesButton = ctk.CTkButton(frame, text="Lamp", font=("Arial", 20), text_color="white", fg_color="black", width=20)
 
-    powerLabel = ctk.CTkLabel(frame, text="Power:", font=("Arial", 12), text_color="white", fg_color="black")
-    onButton = ctk.CTkButton(frame, text="ON", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.on_off", "powerSwitch", 1))        
-    offButton = ctk.CTkButton(frame, text="OFF", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.on_off", "powerSwitch", 0))        
+    powerLabel = ctk.CTkLabel(frame, text="Power:", font=("Arial", 24), text_color="white", fg_color="black")
+    onButton = ctk.CTkButton(frame, text="ON", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.on_off", "powerSwitch", 1))        
+    offButton = ctk.CTkButton(frame, text="OFF", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.on_off", "powerSwitch", 0))        
 
-    brightnessLabel = ctk.CTkLabel(frame, text="Brightness:", font=("Arial", 12), text_color="white", fg_color="black")
-    percent1Button = ctk.CTkButton(frame, text="1%", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.range", "brightness", 1))
-    percent25Button = ctk.CTkButton(frame, text="25%", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.range", "brightness", 25))
-    percent50Button = ctk.CTkButton(frame, text="50%", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.range", "brightness", 50))
-    percent75Button = ctk.CTkButton(frame, text="75%", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.range", "brightness", 75))
-    percent100Button = ctk.CTkButton(frame, text="100%", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.range", "brightness", 100))
+    brightnessLabel = ctk.CTkLabel(frame, text="Brightness:", font=("Arial", 24), text_color="white", fg_color="black")
+    percent1Button = ctk.CTkButton(frame, text="1%", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.range", "brightness", 1))
+    percent25Button = ctk.CTkButton(frame, text="25%", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.range", "brightness", 25))
+    percent50Button = ctk.CTkButton(frame, text="50%", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.range", "brightness", 50))
+    percent75Button = ctk.CTkButton(frame, text="75%", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.range", "brightness", 75))
+    percent100Button = ctk.CTkButton(frame, text="100%", font=("Arial", 10), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.range", "brightness", 100))
 
-    whiteTempLabel = ctk.CTkLabel(frame, text="White Temperature:", font=("Arial", 12), text_color="white", fg_color="black")
-    coolTempButton = ctk.CTkButton(frame, text="Cool", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorTemperatureK", 9000))
-    pureTempButton = ctk.CTkButton(frame, text="Pure", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorTemperatureK", 5500))
-    warmTempButton = ctk.CTkButton(frame, text="Warm", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorTemperatureK", 2000))
+    whiteTempLabel = ctk.CTkLabel(frame, text="White Temperature:", font=("Arial", 24), text_color="white", fg_color="black")
+    coolTempButton = ctk.CTkButton(frame, text="Cool", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.color_setting", "colorTemperatureK", 9000))
+    pureTempButton = ctk.CTkButton(frame, text="Pure", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.color_setting", "colorTemperatureK", 5500))
+    warmTempButton = ctk.CTkButton(frame, text="Warm", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.color_setting", "colorTemperatureK", 2000))
 
-    colorLabel = ctk.CTkLabel(frame, text="Color:", font=("Arial", 12), text_color="white", fg_color="black")
-    redButton = ctk.CTkButton(frame, text="Red", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 0, 0))))
-    orangeButton = ctk.CTkButton(frame, text="Orange", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 127, 0))))
-    yellowButton = ctk.CTkButton(frame, text="Yellow", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 255, 0))))
-    greenButton = ctk.CTkButton(frame, text="Green", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 255, 0))))
-    blueButton = ctk.CTkButton(frame, text="Blue", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 0, 255))))
-    purpleButton = ctk.CTkButton(frame, text="Purple", font=("Arial", 10), text_color="white", fg_color="black", width=10, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(160, 0, 255))))
+    colorLabel = ctk.CTkLabel(frame, text="Color:", font=("Arial", 24), text_color="white", fg_color="black")
+    redButton = ctk.CTkButton(frame, text="Red", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 0, 0))))
+    orangeButton = ctk.CTkButton(frame, text="Orange", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 127, 0))))
+    yellowButton = ctk.CTkButton(frame, text="Yellow", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 255, 0))))
+    greenButton = ctk.CTkButton(frame, text="Green", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 255, 0))))
+    blueButton = ctk.CTkButton(frame, text="Blue", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 0, 255))))
+    purpleButton = ctk.CTkButton(frame, text="Purple", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(160, 0, 255))))
 
     titleLabel.grid(column = 0, row = 0, columnspan = 3, sticky='sw', pady = 3, padx = 13)
     closeWindow.grid(column = 5, row = 0,  pady = 3, padx = 3)
@@ -194,7 +194,7 @@ def toggle_todo_list():
     if todo_frame.winfo_ismapped():  # If mini-screen is visible, hide it
         todo_frame.place_forget()
     else:
-        todo_frame.place(x=150, y=230)  # Display the mini-screen to the right of the "To-Do List" widget
+        todo_frame.place(x=324, y=631)  # Display the mini-screen to the right of the "To-Do List" widget
         todo_frame.lift()  # Bring the mini-screen to the front
 
 # Function to hide the To-Do mini-screen when clicking on the main window
@@ -204,29 +204,29 @@ def hide_todo_list(event):
 
 # List of widgets to display. This makes it easy to initialize the labels all at once
 widgets = [
-    {"text": "Calendar", "x": 50, "y": 50},
-    {"text": "Weather", "x": 250, "y": 50},
-    {"text": "To-Do List", "x": 50, "y": 200},
-    {"text": "Music", "x": 50, "y": 400},
-    {"text": "Settings", "x": 50, "y": 600},
+    {"text": "Calendar", "x": 108, "y": 137},
+    {"text": "Weather", "x": 540, "y": 137},
+    {"text": "To-Do List", "x": 108, "y": 549},
+    {"text": "Music", "x": 108, "y": 1097},
+    {"text": "Settings", "x": 108, "y": 1646},
 ]
 
 precreated_widgets = {}
 for widget in widgets:
     precreated_widgets[widget["text"]] = ctk.CTkLabel(
-        root, text=widget["text"], font=("Arial", 20), text_color="white"
+        root, text=widget["text"], font=("Arial", 48), text_color="white"
     )
 
 # Create widgets once
-calendar_widget = ctk.CTkLabel(root, text=calendar.month_name[time.localtime().tm_mon], font=("Arial", 15))
-weather_widget = ctk.CTkLabel(root, text=f"{temp} Degrees Celsius\n{clouds}% Cloudy", font=("Arial", 15), fg_color=weather_color, text_color="Black")
-todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", 15), text_color="white")
+calendar_widget = ctk.CTkLabel(root, text=calendar.month_name[time.localtime().tm_mon], font=("Arial", 36))
+weather_widget = ctk.CTkLabel(root, text=f"{temp} Degrees Celsius\n{clouds}% Cloudy", font=("Arial", 36), fg_color=weather_color, text_color="Black")
+todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", 36), text_color="white")
 # todo_widget.pack(pady=10, padx=20, anchor="w")  # Left-align with padding
 todo_widget.bind("<Button-1>", lambda e: toggle_todo_list())  # Make the To-Do list clickable
-music_widget = ctk.CTkLabel(root, text="Playing: Song XYZ", font=("Arial", 15))
-smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", 15), command=lambda: smart_home_widget())
-settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", 15))
-ask_mirror_button = ctk.CTkButton(root, text="Ask Mirror", font=("Arial", 20), command=ask_mirror)
+music_widget = ctk.CTkLabel(root, text="Playing: Song XYZ", font=("Arial", 36))
+smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", 36), command=lambda: smart_home_widget())
+settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", 36))
+ask_mirror_button = ctk.CTkButton(root, text="Ask Mirror", font=("Arial", 40), command=ask_mirror)
 
 # Function to show widgets using CustomTkinter
 def show_widgets():
@@ -243,19 +243,19 @@ def show_widgets():
             label.place(x=widget["x"], y=widget["y"])  # Place pre-created widgets
 
         # Place other widgets
-        calendar_widget.place(x=50, y=80)
-        weather_widget.place(x=250, y=120)
-        todo_widget.place(x=50, y=230)
-        music_widget.place(x=50, y=430)
-        smart_home_button.place(x=50, y=530)
-        settings_widget.place(x=50, y=630)
-        ask_mirror_button.place(x=250, y=630)
+        calendar_widget.place(x=108, y=219)
+        weather_widget.place(x=540, y=329)
+        todo_widget.place(x=108, y=631)
+        music_widget.place(x=108, y=1180)
+        smart_home_button.place(x=108, y=1454)
+        settings_widget.place(x=108, y=1728)
+        ask_mirror_button.place(x=540, y=1728)
 
         shown = True
 
 # Mini-screen for the To-Do List (Initially hidden)
-todo_frame = ctk.CTkFrame(root, width=200, height=300, fg_color="black")  # Adjust width to suit the content
-todo_canvas = ctk.CTkCanvas(todo_frame, width=180, height=280, bg='black')  # A canvas for scrolling
+todo_frame = ctk.CTkFrame(root, width=432, height=823, fg_color="black")  # Adjust width to suit the content
+todo_canvas = ctk.CTkCanvas(todo_frame, width=180, height=768, bg='black')  # A canvas for scrolling
 todo_scrollbar = ctk.CTkScrollbar(todo_frame, orientation="vertical", command=todo_canvas.yview)
 todo_scrollbar.pack(side="right", fill="y")
 todo_canvas.pack(side="left", fill="both", expand=True)
@@ -267,7 +267,7 @@ todo_inner_frame_id = todo_canvas.create_window((0, 0), window=todo_inner_frame,
 
 # Insert tasks into the scrollable frame as labels
 for task in tasks:
-    task_label = ctk.CTkLabel(todo_inner_frame, text=task, font=("Arial", 14))
+    task_label = ctk.CTkLabel(todo_inner_frame, text=task, font=("Arial",28))
     task_label.pack(pady=5, padx=10, anchor="w")  # Anchor to the left side for alignment
 
 # Update scroll region to support scrolling

@@ -15,9 +15,18 @@ response = requests.get(api_url, headers=headers, params = params)
 if response.status_code == requests.codes.ok:
         data = response.json()  # Parse JSON response
         temp = data['temp']  # Extract the temp text
-        clouds = data['cloud_pct'] #cloud coverage       
+        clouds = data['cloud_pct'] #cloud coverage 
+        wind_mph = data['wind_speed'] #wind speed
+        humid = data['humidity'] #humididty
+        low_temp = data['min_temp'] # low temp
+        high_temp = data['max_temp'] #high temp 
 else:
-    temp = "unavailable"
+    temp = "unavailable"    
+    clouds = "unavailable"
+    wind_mph = "unavailable"
+    humid = "unavailable"
+    low_temp = "unavailable"
+    high_temp= "unavailable"
 
 weather_color = "light blue" #defines basic widget color
 #adjusts color to match temp
@@ -52,3 +61,23 @@ if response.status_code == requests.codes.ok:
         quote = saying + "\n- " + author
 else:
     quote = "Quote Unavailable"
+
+
+"""News API"""
+api_url = 'https://newsdata.io/api/1/latest?apikey=pub_7498696714b447bc7f0e004260a0cce46ee01&q=detroit&language=en'
+
+response = requests.get(api_url)
+news_list = "\n" * 2
+if response.status_code == requests.codes.ok:
+        data = response.json()  # Parse JSON response
+        for article in data["results"]:
+              title = article.get("title", "None")
+              summary = article.get("description", "None")
+              news = "Headline: "+ str(title) + ("\n" * 1) +"Description: " + str(summary) + ("\n" * 2)
+              if len(str(summary)) > 500:
+                    news = "Headline: "+ str(title) + ("\n" * 1)
+              news_list += news
+        
+else:
+    print("Error:", response.status_code, response.text)
+

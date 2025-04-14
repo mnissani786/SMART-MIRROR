@@ -7,7 +7,7 @@ from API_Data import clouds
 from API_Data import quote
 from API_Data import weather_symbol
 from PIL import Image, ImageTk
-from speech import *
+# from speech import *
 import imageio  # For video playback
 from goveeTest import *
 
@@ -36,7 +36,7 @@ clock.place(x=540, y=960, anchor="center")  # Exactly in the center of the scree
 updating = False  # Flag to control time updates
 
 # Place quote on screen
-Quote_write = ctk.CTkLabel(root, text="", font=("Aptos (Body)", 72), text_color="white", wraplength=450)
+Quote_write = ctk.CTkLabel(root, text="", font=("Aptos (Body)", 72), text_color="white", wraplength=1000)
 Quote_write.place(x=540, y=960, anchor="center")
 
 # New Idle screen
@@ -48,7 +48,7 @@ def Idle_screen():
 def place_sym():
     weather_sym = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (160,160))
     Wsym_label = ctk.CTkLabel(root, image=weather_sym, text="")
-    Wsym_label.place(x=820, y=261)
+    Wsym_label.place(x=900, y=261)
 
 # Function to show "SMILE" first
 def show_smile():
@@ -73,7 +73,7 @@ def play_video():
             video_label.configure(image=frame_photo)
             video_label.image = frame_photo
             root.update()  # Update the root window
-            time.sleep(0.03)  # Control playback speed (~30 fps)
+            time.sleep(0.005)  # Control playback speed (~30 fps)
 
         video_label.destroy()  # Remove video label after playback
 
@@ -113,10 +113,10 @@ def move_clock_up(y):
 
 # Function to handle "Ask Mirror" button click
 def ask_mirror():
-    ask_mirror_button.configure(text="Listening...")  # Change button text
-    ask_mirror_button.update_idletasks()  # Update the button text immediately
-    get_audio()
-    ask_mirror_button.configure(text="Ask Mirror")  # Restore button text
+    #ask_mirror_button.configure(text="Listening...")  # Change button text
+    #ask_mirror_button.update_idletasks()  # Update the button text immediately
+    #get_audio()
+    # ask_mirror_button.configure(text="Ask Mirror")  # Restore button text
     print("Ask Mirror Clicked!")
 
 # Closes the interactive pop-up widget, can be used for other interactive widgets

@@ -19,40 +19,6 @@ ctk.set_default_color_theme("blue")  # Optional: Default theme
 
 # making hashmaps for small mode (computer, for development) large mode (the mirror itself)
 
-"""small = {
-    "screen_width": 540,
-    "screen_height": 960,
-    "font_size": 36,
-    "font_wrapLength": 500,
-    "weather_symbol_size": 80,
-    "weather_symbol_x": 450,
-    "weather_symbol_y": 130,
-    "clock_start_y": 480,
-    "clock_end_y": 274,
-    "todo_frame_x": 162,
-    "todo_frame_y": 315,
-    "calendar_x": 54,
-    "calendar_y": 68,
-    "calendar_content_y": 110,
-    "weather_x": 270,
-    "weather_y": 68,
-    "weather_content_y": 165,
-    "todo_x": 54,
-    "todo_y": 274,
-    "todo_content_y": 315,
-    "music_x": 54,
-    "music_y": 549,
-    "music_content_y": 590,
-    "smart_home_x": 54,
-    "smart_home_y": 727,
-    "settings_x": 54,   
-    "settings_y": 823,
-    "settings_content_y": 865,
-    "label_font_size": 24,
-    "ask_mirror_x": 270,
-    "ask_mirror_y": 864,
-}"""
-
 large = {
     "screen_width": 1080,
     "screen_height": 1920,
@@ -88,7 +54,6 @@ large = {
 }
 
 small = {key: math.floor(value / 2) for key, value in large.items()}  # Halve the values for small mode
-print(small["ask_mirror_x"])
 
 root = ctk.CTk()
 # uncomment the line below this to get the title bar back

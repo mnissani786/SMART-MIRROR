@@ -67,7 +67,7 @@ class LanguageModelProcessor:
 class TextToSpeech:
     # Set your Deepgram API Key and desired voice model
     DG_API_KEY = os.getenv("DEEPGRAM_API_KEY")
-    MODEL_NAME = "aura-luna-en"  # Example model name, change as needed
+    MODEL_NAME = "aura-asteria-en"  # Example model name, change as needed
 
     @staticmethod
     def is_installed(lib_name: str) -> bool:

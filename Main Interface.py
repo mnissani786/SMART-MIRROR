@@ -6,8 +6,8 @@ from API_Data import weather_color
 from API_Data import clouds
 from API_Data import quote
 from API_Data import weather_symbol
+import math
 from PIL import Image, ImageTk
-# from speech import *
 import imageio  # For video playback
 from goveeTest import *
 
@@ -18,7 +18,8 @@ ctk.set_default_color_theme("blue")  # Optional: Default theme
 
 
 # making hashmaps for small mode (computer, for development) large mode (the mirror itself)
-small = {
+
+"""small = {
     "screen_width": 540,
     "screen_height": 960,
     "font_size": 36,
@@ -50,7 +51,7 @@ small = {
     "label_font_size": 24,
     "ask_mirror_x": 270,
     "ask_mirror_y": 864,
-}
+}"""
 
 large = {
     "screen_width": 1080,
@@ -85,6 +86,9 @@ large = {
     "ask_mirror_x": 540,
     "ask_mirror_y": 1728,
 }
+
+small = {key: math.floor(value / 2) for key, value in large.items()}  # Halve the values for small mode
+print(small["ask_mirror_x"])
 
 root = ctk.CTk()
 # uncomment the line below this to get the title bar back

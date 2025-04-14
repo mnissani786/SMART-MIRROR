@@ -1,7 +1,9 @@
+av==14.3.0
 certifi==2025.1.31
 charset-normalizer==3.4.1
 customtkinter==5.2.2
 darkdetect==0.8.0
+ffmpeg==1.4
 idna==3.10
 imageio==2.37.0
 numpy==2.2.4

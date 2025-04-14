@@ -5,5 +5,5 @@
 
 cd /
 cd home/kaeden/Documents/Code/SMART-MIRROR
-sudo /home/kaeden/Documents/Code/SMART-MIRROR/.venv/bin/python3  /home/kaeden/Documents/Code/SMART-MIRROR/boot.py
+sudo /home/kaeden/Documents/Code/SMART-MIRROR/.venv/bin/python3  /home/kaeden/Documents/Code/SMART-MIRROR/boot.py >> /home/kaeden/Documents/Code/SMART-MIRROR/smart_mirror.log 2>&1
 cd /

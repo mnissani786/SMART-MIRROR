@@ -17,6 +17,7 @@ ctk.set_appearance_mode("dark")  # Optional: Dark mode
 ctk.set_default_color_theme("blue")  # Optional: Default theme
 
 root = ctk.CTk()
+root.overrideredirect(True)
 root.title("Reflective Assistant")
 root.geometry("1080x1920")
 

@@ -55,7 +55,7 @@ ptyprocess==0.7.0
 pure-eval==0.2.2
 PyAudio==0.2.14
 pycparser==2.21
-pydantic==2.6.2
+pydantic<2.0
 pydantic_core==2.16.3
 pygame==2.5.2
 Pygments==2.17.2

@@ -33,8 +33,8 @@ def run_asyncio_loop():
 ctk.set_appearance_mode("dark")  # Optional: Dark mode
 ctk.set_default_color_theme("blue")  # Optional: Default theme
 
-# Making hashmaps for small mode (computer, for development) and large mode (the mirror itself)
-large = {
+# Making a hashmap that stores the positions and sizes of the widgets and fonts
+size = {
     "screen_width": 1080,
     "screen_height": 1920,
     "font_size": 72,
@@ -68,13 +68,15 @@ large = {
     "ask_mirror_y": 1728,
 }
 
-small = {key: math.floor(value / 2) for key, value in large.items()}  # Halve the values for small mode
+Small = True  # Flag to determine if small mode is enabled
+if Small:
+    size = {key: math.floor(value / 2) for key, value in size.items()}  # Halve the values for small mode
 
 root = ctk.CTk()
 # uncomment the line below this to get the title bar back
 #root.overrideredirect(True)
 root.title("Reflective Assistant")
-root.geometry(f"{small['screen_width']}x{small['screen_height']}")
+root.geometry(f"{size['screen_width']}x{size['screen_height']}")
 
 # Start the asyncio loop alongside the GUI
 run_asyncio_loop()
@@ -89,14 +91,14 @@ tasks = [
 ]
 
 # Create the clock label
-clock = ctk.CTkLabel(root, font=("Aptos (Body)", small["font_size"]), text_color="white")
-clock.place(x=small["screen_width"]/2, y=small["screen_height"]/2, anchor="center")  # Exactly in the center of the screen
+clock = ctk.CTkLabel(root, font=("Aptos (Body)", size["font_size"]), text_color="white")
+clock.place(x=size["screen_width"]/2, y=size["screen_height"]/2, anchor="center")  # Exactly in the center of the screen
 
 updating = False  # Flag to control time updates
 
 # Place quote on screen
-Quote_write = ctk.CTkLabel(root, text="", font=("Aptos (Body)", small["font_size"]), text_color="white", wraplength=small["font_wrapLength"])
-Quote_write.place(x=small["screen_width"]/2, y=small["screen_height"]/2, anchor="center")
+Quote_write = ctk.CTkLabel(root, text="", font=("Aptos (Body)", size["font_size"]), text_color="white", wraplength=size["font_wrapLength"])
+Quote_write.place(x=size["screen_width"]/2, y=size["screen_height"]/2, anchor="center")
 
 # New Idle screen
 def Idle_screen():
@@ -105,9 +107,9 @@ def Idle_screen():
 
 #symbol for cloudyness
 def place_sym():
-    weather_sym = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (small["weather_symbol_size"], small["weather_symbol_size"]))
+    weather_sym = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (size["weather_symbol_size"], size["weather_symbol_size"]))
     Wsym_label = ctk.CTkLabel(root, image=weather_sym, text="")
-    Wsym_label.place(x=small["weather_symbol_x"], y=small["weather_symbol_y"])
+    Wsym_label.place(x=size["weather_symbol_x"], y=size["weather_symbol_y"])
 
 # Function to show "SMILE" first
 def show_smile():
@@ -127,7 +129,7 @@ def play_video():
     def stream_video():
         for frame in video:
             frame_image = Image.fromarray(frame)  # Convert frame to image
-            frame_image = frame_image.resize((small["screen_width"], small["screen_height"]), Image.Resampling.LANCZOS)  # Resize to fit screen
+            frame_image = frame_image.resize((size["screen_width"], size["screen_height"]), Image.Resampling.LANCZOS)  # Resize to fit screen
             frame_photo = ImageTk.PhotoImage(frame_image)
             video_label.configure(image=frame_photo)
             video_label.image = frame_photo
@@ -143,7 +145,7 @@ def start_clock():
     global updating
     updating = True  # Enable updating
     update_time()
-    root.after(3000, move_clock_up, small["clock_start_y"])  # Move clock up after 3 seconds
+    root.after(3000, move_clock_up, size["clock_start_y"])  # Move clock up after 3 seconds
 
 # Function to update time (only if updating is enabled)
 def update_time():
@@ -159,7 +161,7 @@ widgets_shown = False
 def move_clock_up(y):
     global updating, widgets_shown
     updating = False  # Stop updating during movement to prevent flickering
-    if y > small["clock_end_y"]:
+    if y > size["clock_end_y"]:
         clock.place(y=y-1)
         root.after(5, move_clock_up, y-1)
     else:
@@ -253,7 +255,7 @@ def toggle_todo_list():
     if todo_frame.winfo_ismapped():  # If mini-screen is visible, hide it
         todo_frame.place_forget()
     else:
-        todo_frame.place(x=small["todo_frame_x"], y=small["todo_frame_y"])  # Display the mini-screen to the right of the "To-Do List" widget
+        todo_frame.place(x=size["todo_frame_x"], y=size["todo_frame_y"])  # Display the mini-screen to the right of the "To-Do List" widget
         todo_frame.lift()  # Bring the mini-screen to the front
 
 # Function to hide the To-Do mini-screen when clicking on the main window
@@ -263,29 +265,29 @@ def hide_todo_list(event):
 
 # List of widgets to display. This makes it easy to initialize the labels all at once
 widgets = [
-    {"text": "Calendar", "x": small["calendar_x"], "y": small["calendar_y"]},
-    {"text": "Weather", "x": small["weather_x"], "y": small["weather_y"]},
-    {"text": "To-Do List", "x": small["todo_x"], "y": small["todo_y"]},
-    {"text": "Music", "x": small["music_x"], "y": small["music_y"]},
-    {"text": "Settings", "x": small["settings_x"], "y": small["settings_y"]},
+    {"text": "Calendar", "x": size["calendar_x"], "y": size["calendar_y"]},
+    {"text": "Weather", "x": size["weather_x"], "y": size["weather_y"]},
+    {"text": "To-Do List", "x": size["todo_x"], "y": size["todo_y"]},
+    {"text": "Music", "x": size["music_x"], "y": size["music_y"]},
+    {"text": "Settings", "x": size["settings_x"], "y": size["settings_y"]},
 ]
 
 precreated_widgets = {}
 for widget in widgets:
     precreated_widgets[widget["text"]] = ctk.CTkLabel(
-        root, text=widget["text"], font=("Arial", small["label_font_size"]), text_color="white"
+        root, text=widget["text"], font=("Arial", size["label_font_size"]), text_color="white"
     )
 
 # Create widgets once
-calendar_widget = ctk.CTkLabel(root, text=calendar.month_name[time.localtime().tm_mon], font=("Arial", small["label_font_size"]))
-weather_widget = ctk.CTkLabel(root, text=f"{temp} Degrees Celsius\n{clouds}% Cloudy", font=("Arial", small["label_font_size"]), fg_color=weather_color, text_color="Black")
-todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", small["label_font_size"]), text_color="white")
+calendar_widget = ctk.CTkLabel(root, text=calendar.month_name[time.localtime().tm_mon], font=("Arial", size["label_font_size"]))
+weather_widget = ctk.CTkLabel(root, text=f"{temp} Degrees Celsius\n{clouds}% Cloudy", font=("Arial", size["label_font_size"]), fg_color=weather_color, text_color="Black")
+todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", size["label_font_size"]), text_color="white")
 # todo_widget.pack(pady=10, padx=20, anchor="w")  # Left-align with padding
 todo_widget.bind("<Button-1>", lambda e: toggle_todo_list())  # Make the To-Do list clickable
-music_widget = ctk.CTkLabel(root, text="Playing: Song XYZ", font=("Arial", small["label_font_size"]))
-smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", small["label_font_size"]), command=lambda: smart_home_widget())
-settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", small["label_font_size"]))
-ask_mirror_button = ctk.CTkButton(root, text="Ask Mirror", font=("Arial", small["label_font_size"]), command=ask_mirror)
+music_widget = ctk.CTkLabel(root, text="Playing: Song XYZ", font=("Arial", size["label_font_size"]))
+smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", size["label_font_size"]), command=lambda: smart_home_widget())
+settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", size["label_font_size"]))
+ask_mirror_button = ctk.CTkButton(root, text="Ask Mirror", font=("Arial", size["label_font_size"]), command=ask_mirror)
 
 # Function to show widgets using CustomTkinter
 def show_widgets():
@@ -302,13 +304,13 @@ def show_widgets():
             label.place(x=widget["x"], y=widget["y"])  # Place pre-created widgets
 
         # Place other widgets
-        calendar_widget.place(x=small["calendar_x"], y=small["calendar_content_y"])
-        weather_widget.place(x=small["weather_x"], y=small["weather_content_y"])
-        todo_widget.place(x=small["todo_x"], y=small["todo_content_y"])
-        music_widget.place(x=small["music_x"], y=small["music_content_y"])
-        smart_home_button.place(x=small["smart_home_x"], y=small["smart_home_y"])
-        settings_widget.place(x=small["settings_x"], y=small["settings_content_y"])
-        ask_mirror_button.place(x=small["ask_mirror_x"], y=small["ask_mirror_y"])
+        calendar_widget.place(x=size["calendar_x"], y=size["calendar_content_y"])
+        weather_widget.place(x=size["weather_x"], y=size["weather_content_y"])
+        todo_widget.place(x=size["todo_x"], y=size["todo_content_y"])
+        music_widget.place(x=size["music_x"], y=size["music_content_y"])
+        smart_home_button.place(x=size["smart_home_x"], y=size["smart_home_y"])
+        settings_widget.place(x=size["settings_x"], y=size["settings_content_y"])
+        ask_mirror_button.place(x=size["ask_mirror_x"], y=size["ask_mirror_y"])
 
         shown = True
 

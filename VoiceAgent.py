@@ -27,8 +27,11 @@ from deepgram import (
 
 load_dotenv()
 
+Listening = False
+
 class LanguageModelProcessor:
     def __init__(self):
+        global Listening
         self.llm = ChatGroq(temperature=0, model_name="meta-llama/llama-4-scout-17b-16e-instruct", groq_api_key=os.getenv("GROQ_API_KEY"))
 
         self.memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
@@ -50,7 +53,10 @@ class LanguageModelProcessor:
         )
 
     def process(self, text):
-        self.memory.chat_memory.add_user_message(text)  # Add user message to memory
+        global Listening
+        if Listening:
+            self.memory.chat_memory.add_user_message(text)  # Add user message to memory
+            print("I am listneing heeehehe")
 
         start_time = time.time()
 
@@ -58,7 +64,9 @@ class LanguageModelProcessor:
         response = self.conversation.invoke({"text": text})
         end_time = time.time()
 
-        self.memory.chat_memory.add_ai_message(response['text'])  # Add AI response to memory
+        if Listening:
+            self.memory.chat_memory.add_ai_message(response['text'])  # Add AI response to memory
+            print("I am listneing heeehehe")
 
         elapsed_time = int((end_time - start_time) * 1000)
         print(f"LLM ({elapsed_time}ms): {response['text']}")
@@ -197,20 +205,39 @@ class ConversationManager:
 
         # Loop indefinitely until "goodbye" is detected
         while True:
-            await get_transcript(handle_full_sentence)
-            
-            # Check for "goodbye" to exit the loop
-            if "goodbye" in self.transcription_response.lower():
-                break
-            
-            llm_response = self.llm.process(self.transcription_response)
-
+            global Listening
             tts = TextToSpeech()
-            tts.speak(llm_response)
-            print(f"llm response: {llm_response}")
+            while True:
+                await get_transcript(handle_full_sentence)
 
-            # Reset transcription_response for the next loop iteration
-            self.transcription_response = ""
+                #check for the keyword hello to start the conversation
+                if "vivi" in self.transcription_response.lower():
+                    Listening = True
+                    print("Voice activation detected. Starting conversation...")
+                    tts.speak("Hey! How can I help you?")
+                    break
+                llm_response = self.llm.process(self.transcription_response)
+
+                print(f"llm response: {llm_response}")
+
+                # Reset transcription_response for the next loop iteration
+                self.transcription_response = ""
+
+            while True:
+                await get_transcript(handle_full_sentence)
+                
+                # Check for "goodbye" to exit the loop
+                if "goodbye" in self.transcription_response.lower():
+                    Listening = False
+                    break
+                
+                llm_response = self.llm.process(self.transcription_response)
+
+                tts.speak(llm_response)
+                print(f"llm response: {llm_response}")
+
+                # Reset transcription_response for the next loop iteration
+                self.transcription_response = ""
 
 if __name__ == "__main__":
     manager = ConversationManager()

@@ -1,24 +1,39 @@
 import customtkinter as ctk
 import time
 import calendar
-from API_Data import temp
-from API_Data import weather_color
-from API_Data import clouds
-from API_Data import quote
-from API_Data import weather_symbol
+from API_Data import temp, weather_color, clouds, quote, weather_symbol
 import math
 from PIL import Image, ImageTk
 import imageio  # For video playback
 from goveeTest import *
+import asyncio
+from VoiceAgent import ConversationManager
 
+# Initialize the conversation manager
+conversation_manager = ConversationManager()
+
+# Function to start the conversation manager in the background
+async def start_conversation():
+    await conversation_manager.main()
+
+# Function to integrate asyncio with the tkinter main loop
+def run_asyncio_loop():
+    loop = asyncio.get_event_loop()
+    loop.create_task(start_conversation())  # Run the conversation manager as a background task
+
+    # Periodically run the asyncio event loop while keeping the GUI responsive
+    def poll():
+        loop.stop()  # Stop the loop if it's already running
+        loop.run_forever()  # Run the asyncio loop
+        root.after(100, poll)  # Schedule the next poll
+
+    root.after(100, poll)  # Start polling
 
 # Initialize the main window
 ctk.set_appearance_mode("dark")  # Optional: Dark mode
 ctk.set_default_color_theme("blue")  # Optional: Default theme
 
-
-# making hashmaps for small mode (computer, for development) large mode (the mirror itself)
-
+# Making hashmaps for small mode (computer, for development) and large mode (the mirror itself)
 large = {
     "screen_width": 1080,
     "screen_height": 1920,
@@ -61,7 +76,8 @@ root = ctk.CTk()
 root.title("Reflective Assistant")
 root.geometry(f"{small['screen_width']}x{small['screen_height']}")
 
-
+# Start the asyncio loop alongside the GUI
+run_asyncio_loop()
 
 # Sample list of tasks for the To-Do widget
 tasks = [

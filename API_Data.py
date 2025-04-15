@@ -1,6 +1,6 @@
 """This document collects all APIs and organizes the data needed to be displayed"""
 import requests
-
+from datetime import datetime
 
 
 """Weather Data"""
@@ -20,6 +20,8 @@ if response.status_code == requests.codes.ok:
         humid = data['humidity'] #humididty
         low_temp = data['min_temp'] # low temp
         high_temp = data['max_temp'] #high temp 
+        sunrise = data['sunrise'] #sunrise
+        sunset = data['sunset'] #sunset
 else:
     temp = "unavailable"    
     clouds = "unavailable"
@@ -27,6 +29,11 @@ else:
     humid = "unavailable"
     low_temp = "unavailable"
     high_temp= "unavailable"
+    sunrise = "unavailable"
+    sunset = "unavailable"
+
+sunsettime = datetime.fromtimestamp(sunset).strftime('%H:%M')
+sunrisetime = datetime.fromtimestamp(sunrise).strftime('%H:%M')
 
 weather_color = "light blue" #defines basic widget color
 #adjusts color to match temp
@@ -64,7 +71,7 @@ else:
 
 
 """News API"""
-api_url = 'https://newsdata.io/api/1/latest?apikey=pub_7498696714b447bc7f0e004260a0cce46ee01&q=detroit&language=en'
+api_url = 'https://newsdata.io/api/1/latest?apikey=pub_7498696714b447bc7f0e004260a0cce46ee01&q=detroit&language=en&size=6'
 
 response = requests.get(api_url)
 news_list = "\n" * 2

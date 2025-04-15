@@ -27,8 +27,11 @@ from deepgram import (
 
 from smarthome import SmartHome
 from event_manager import event_manager
+from goveeTest import changeLight, colorConversion
 
 load_dotenv()
+
+On_SmartHome = True
 
 class LanguageModelProcessor:
     def __init__(self):
@@ -195,6 +198,7 @@ class ConversationManager:
         self.llm = LanguageModelProcessor()
 
     async def main(self):
+        global On_SmartHome
         def handle_full_sentence(full_sentence):
             self.transcription_response = full_sentence
 
@@ -203,6 +207,37 @@ class ConversationManager:
             tts = TextToSpeech()
             while True:
                 await get_transcript(handle_full_sentence)
+
+                if On_SmartHome:
+                    if "red" in self.transcription_response.lower():
+                        print("Turning the light red...")
+                        tts.speak("Govee Light Red.")
+                        changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 0, 0)))
+                    if "orange" in self.transcription_response.lower():
+                        print("Turning the light orange...")
+                        tts.speak("Govee Light Orange.")
+                        changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 127, 0)))
+                    if "yellow" in self.transcription_response.lower():
+                        print("Turning the light yellow...")
+                        tts.speak("Govee Light Yellow.")
+                        changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 255, 0)))    
+                    if "green" in self.transcription_response.lower():
+                        print("Turning the light green...")
+                        tts.speak("Govee Light Green.")
+                        changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 255, 0)))
+                    if "blue" in self.transcription_response.lower():
+                        print("Turning the light blue...")
+                        tts.speak("Govee Light Blue.")
+                        changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 0, 255)))
+                    if "purple" in self.transcription_response.lower():
+                        print("Turning the light purple...")
+                        tts.speak("Govee Light Purplse.")
+                        changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(160, 0, 255)))
+                    if "close" in self.transcription_response.lower():
+                        print("Closing the smart home widget...")
+                        tts.speak("Closing smart home.")
+                        event_manager.trigger_event("smart_home_deactivate")  # Trigger the event
+                        On_SmartHome = False
 
                 # Check for the keyword "vivi" to start the conversation
                 if "hey, vivi" in self.transcription_response.lower():
@@ -213,6 +248,7 @@ class ConversationManager:
                     print("Smart home activation detected. Starting smart home conversation...")
                     tts.speak("Smart home activated.")
                     event_manager.trigger_event("smart_home_activate")  # Trigger the event
+                    On_SmartHome = True
                 llm_response = self.llm.process(self.transcription_response)
 
                 print(f"llm response: {llm_response}")

@@ -26,6 +26,7 @@ from deepgram import (
 )
 
 from smarthome import SmartHome
+from event_manager import event_manager
 
 load_dotenv()
 
@@ -189,10 +190,9 @@ async def get_transcript(callback):
         return
 
 class ConversationManager:
-    def __init__(self, on_smart_home_activate=None):
+    def __init__(self):
         self.transcription_response = ""
         self.llm = LanguageModelProcessor()
-        self.on_smart_home_activate = on_smart_home_activate  # Callback for smart home activation
 
     async def main(self):
         def handle_full_sentence(full_sentence):
@@ -203,7 +203,6 @@ class ConversationManager:
             tts = TextToSpeech()
             while True:
                 await get_transcript(handle_full_sentence)
-                print(f"Transcription: {self.transcription_response}")
 
                 # Check for the keyword "vivi" to start the conversation
                 if "hey, vivi" in self.transcription_response.lower():
@@ -213,8 +212,7 @@ class ConversationManager:
                 if "smart home" in self.transcription_response.lower():
                     print("Smart home activation detected. Starting smart home conversation...")
                     tts.speak("Smart home activated.")
-                    if self.on_smart_home_activate:
-                        self.on_smart_home_activate()  # Trigger the callback
+                    event_manager.trigger_event("smart_home_activate")  # Trigger the event
                 llm_response = self.llm.process(self.transcription_response)
 
                 print(f"llm response: {llm_response}")

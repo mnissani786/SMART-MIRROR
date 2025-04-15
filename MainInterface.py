@@ -9,14 +9,17 @@ from goveeTest import *
 import asyncio
 from VoiceAgent import ConversationManager
 from Vivi import ViviAnimation
+from event_manager import event_manager
 from smarthome import SmartHome
 
 # Function to activate the smart home
 def activate_smart_home():
     smarthome = SmartHome(root)  # Create an instance of the SmartHome class
 
+event_manager.register_event("smart_home_activate", activate_smart_home)
+
 # Initialize the conversation manager with the smart home activation callback
-conversation_manager = ConversationManager(on_smart_home_activate=activate_smart_home)
+conversation_manager = ConversationManager()
 
 # Function to start the conversation manager in the background
 async def start_conversation():

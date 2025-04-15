@@ -197,20 +197,36 @@ class ConversationManager:
 
         # Loop indefinitely until "goodbye" is detected
         while True:
-            await get_transcript(handle_full_sentence)
-            
-            # Check for "goodbye" to exit the loop
-            if "goodbye" in self.transcription_response.lower():
-                break
-            
-            llm_response = self.llm.process(self.transcription_response)
-
             tts = TextToSpeech()
-            tts.speak(llm_response)
-            print(f"llm response: {llm_response}")
+            while True:
+                await get_transcript(handle_full_sentence)
 
-            # Reset transcription_response for the next loop iteration
-            self.transcription_response = ""
+                #check for the keyword hello to start the conversation
+                if "vivi" in self.transcription_response.lower():
+                    print("Voice activation detected. Starting conversation...")
+                    tts.speak("Hey! How can I help you?")
+                    break
+                llm_response = self.llm.process(self.transcription_response)
+
+                print(f"llm response: {llm_response}")
+
+                # Reset transcription_response for the next loop iteration
+                self.transcription_response = ""
+
+            while True:
+                await get_transcript(handle_full_sentence)
+                
+                # Check for "goodbye" to exit the loop
+                if "goodbye" in self.transcription_response.lower():
+                    break
+                
+                llm_response = self.llm.process(self.transcription_response)
+
+                tts.speak(llm_response)
+                print(f"llm response: {llm_response}")
+
+                # Reset transcription_response for the next loop iteration
+                self.transcription_response = ""
 
 if __name__ == "__main__":
     manager = ConversationManager()

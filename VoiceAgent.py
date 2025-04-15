@@ -215,9 +215,11 @@ class ConversationManager:
 
             while True:
                 await get_transcript(handle_full_sentence)
-                
-                # Check for "goodbye" to exit the loop
-                if "goodbye" in self.transcription_response.lower():
+                  
+                # Check for "goodbye", "exit", "quit" or "bye" to exit the loop
+                if any(word in self.transcription_response.lower() for word in ["goodbye", "exit", "quit", "bye"]):
+                    tts.speak("Goodbye!")
+                    print("Exiting conversation...")
                     break
                 
                 llm_response = self.llm.process(self.transcription_response)

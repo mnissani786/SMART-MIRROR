@@ -14,9 +14,18 @@ from smarthome import SmartHome
 
 # Function to activate the smart home
 def activate_smart_home():
+    global smarthome
     smarthome = SmartHome(root)  # Create an instance of the SmartHome class
 
+def deactivate_smart_home():
+    global smarthome
+    if smarthome:
+        smarthome.close_widget()
+        smarthome = None  # Set to None to indicate it's closed
+    # find a way to destroy/hide the smarthome widget.
+
 event_manager.register_event("smart_home_activate", activate_smart_home)
+event_manager.register_event("smart_home_deactivate", deactivate_smart_home)
 
 # Initialize the conversation manager with the smart home activation callback
 conversation_manager = ConversationManager()

@@ -81,3 +81,7 @@ if response.status_code == requests.codes.ok:
 else:
     print("Error:", response.status_code, response.text)
 
+news_pic = "./news_icon.png" #picture for news button
+#https://game-icons.net/icons/ffffff/transparent/1x1/delapouite/newspaper.png
+
+

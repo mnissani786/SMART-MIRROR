@@ -18,6 +18,7 @@ from API_Data import high_temp
 from API_Data import news_pic
 from PIL import Image
 from API_Data import weather_symbol
+from API_Data import sunsettime, sunrisetime
 import customtkinter as ctk
 
 
@@ -32,8 +33,10 @@ curr_temp = str(temp) + "° C"
 cloudy = "Cloud Coverage: " + str(clouds) +"% "
 wind_speed = "Wind Speed: " + str(wind_mph) + "mph"
 humidity = "Humidity:" + str(humid) + "%"
-High = "H: " + str(high_temp)
-Low = "L: " + str(low_temp)
+High = "H: " + str(high_temp) + "° || "
+Low = "L: " + str(low_temp) + + "°"
+sunrisetime = "🌅 Sunrise: " + str(sunrisetime) + " EST"
+sunsettime = "🌇 Sunset: " + str(sunsettime) + " EST"
 
 for i in range(3):
     root.grid_columnconfigure(i, weight=1)
@@ -68,7 +71,7 @@ def news_screen():
     news_frame.grid_rowconfigure(0, weight=1)
     news_frame.grid_rowconfigure(1, weight=1)
 
-    new_display.grid(column = 0, row = 1, padx = 20, pady = 20, sticky = 'nw')
+    new_display.grid(column = 0, row = 1, padx = 10, pady = 10, sticky = 'nw')
     
     #news_frame.configure(wrap="word")
     news_close.grid(column = 0, row= 0)
@@ -80,9 +83,9 @@ def weather_screen():
 
     weather_frame.grid(column = 0, row = 0, columnspan = 3, sticky = 'nsew')
 
-    for i in range(3):
+    for i in range(2):
         weather_frame.grid_columnconfigure(i, weight=1)
-    for i in range(7):
+    for i in range(8):
         weather_frame.grid_rowconfigure(i, weight=1)
     
     
@@ -91,9 +94,12 @@ def weather_screen():
     cloudLabel.grid(column = 0, row = 3, padx = 20, pady = 20, sticky = 'w', columnspan = 2)
     windLabel.grid(column = 0, row = 4, padx = 20, pady = 20, sticky = 'w', columnspan = 2)
     humidLabel.grid(column = 0, row = 5, padx = 20, pady = 20, sticky = 'w', columnspan = 2)
-    HighLabel.grid(column = 2, row = 2, padx = 20, pady = 20, sticky = 'ne')
-    LowLabel.grid(column = 0, row = 2, padx = 20, pady = 20, sticky = 'ne')
+    Low_HighLabel.grid(column = 1, row = 2, padx = 10, pady = 10, sticky = 'n', columnspan = 2)
+    #HighLabel.grid(column = 2, row = 2, padx = 20, pady = 20, sticky = 'ne')
+    #LowLabel.grid(column = 0, row = 2, padx = 20, pady = 20, sticky = 'ne')
     weather_close.grid(column = 0, row = 0, padx = 20, pady = 20, sticky = 'ne')
+    riseLabel.grid(column = 0, row = 6, padx = 20, pady = 20, sticky = 'w', columnspan = 2)
+    setLabel.grid(column = 0, row = 7, padx = 20, pady = 20, sticky = 'w', columnspan = 2)
 
 
 news_frame = ctk.CTkScrollableFrame(master=root, width=500, height= 700, fg_color= 'black')
@@ -113,9 +119,11 @@ tempLabel = ctk.CTkLabel(weather_frame, text = curr_temp, font = ("Times New Rom
 cloudLabel = ctk.CTkLabel(weather_frame, text = cloudy, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
 windLabel = ctk.CTkLabel(weather_frame, text = wind_speed, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
 humidLabel = ctk.CTkLabel(weather_frame, text = humidity, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
-HighLabel = ctk.CTkLabel(weather_frame, text = High, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
-LowLabel = ctk.CTkLabel(weather_frame, text = Low, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
-
+Low_HighLabel = ctk.CTkLabel(weather_frame, text = High + Low, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
+#HighLabel = ctk.CTkLabel(weather_frame, text = High, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
+#LowLabel = ctk.CTkLabel(weather_frame, text = Low, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
+riseLabel = ctk.CTkLabel(weather_frame, text = sunrisetime, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
+setLabel = ctk.CTkLabel(weather_frame, text = sunsettime, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
   
 
 

@@ -1,4 +1,3 @@
-import vlc
 import time
 import mutagen
 from mutagen.mp4 import MP4
@@ -7,6 +6,7 @@ import random
 import threading
 from threading import current_thread
 from threading import Event
+import vlc
 
 class MusicPlayer:
     def __init__(self):
@@ -35,12 +35,14 @@ class MusicPlayer:
             counter = 0
             for x in self.files:
                 counter += 1
-                print("Counter: "+str(counter)+" x: "+x)
-                if x == self.currentFile:
+                #print("Counter: "+str(counter)+" x: "+x)
+                if x == self.currentFile and self.files[counter] != None:                    
                     nextFile = self.files[counter]
                     return nextFile
+                time.sleep(1)        
+                
 
-    def togglePlay(self):
+    def togglePause(self):
         self.player.pause() #toggles 
 
     def play(self):
@@ -50,7 +52,7 @@ class MusicPlayer:
         # Get the file path and create the VLC player
         self.file_path = os.path.join(self.directory, self.currentFile)
         self.player = vlc.MediaPlayer(self.file_path)
-
+        time.sleep(1)
         self.player.play()
         return self.player    
 
@@ -76,27 +78,23 @@ class MusicPlayer:
             print("No files found in directory.")
 
     # for debugging, will transfer to UI design
-    def main(self):
-        while True:
-            cmd = input("Enter command:")
-            if cmd in ["play", "pause"]:
-                self.togglePlay()
-            elif cmd == "skip":
-                self.event.set()  # Changes event to true, meaning that skip has been called
-                time.sleep(1)  # Sleep to avoid overloading the CPU and causing buffer issues
-                self.event.clear()  # Resets event to false
-                self.currentSong = threading.Thread(target=self.skip, args=(self.event,))  # Creates the thread to play the music
-                self.currentSong.start()
-            elif cmd == "shuffle":
-                self.shuffle = self.toggleShuffle()
-                print("Shuffle set to: " +str(self.shuffle))
-            elif cmd == "exit":
-                break
+    def main(self, cmd):   
+        if cmd == "pause":
+            self.togglePause()
+        elif cmd == "skip":
+            self.event.set()  # Changes event to true, meaning that skip has been called
+            time.sleep(1)  # Sleep to avoid overloading the CPU and causing buffer issues
+            self.event.clear()  # Resets event to false
+            self.currentSong = threading.Thread(target=self.skip, args=(self.event,))  # Creates the thread to play the music
+            self.currentSong.start()
+            
+        elif cmd == "shuffle":
+            self.shuffle = self.toggleShuffle()
+            print("Shuffle set to: " +str(self.shuffle))
 
-if __name__ == "__main__":
-    newPlayer = MusicPlayer()
-    if newPlayer:
-        print("should be working!") 
-    else:
-        print("seems this isn't instantiating")
-    newPlayer.main()
+        return self.currentFile
+            
+
+# if __name__ == "__main__":
+#     newPlayer = MusicPlayer()
+#     newPlayer.main()

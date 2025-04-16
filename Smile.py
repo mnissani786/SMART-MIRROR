@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk, ImageSequence
 
-class ViviAnimation:
+class SmileAnimation:
     def __init__(self, parent, gif_path, width=100, height=100, frame_delay=50, x=0, y=0):
         self.parent = parent
         self.gif_path = gif_path
@@ -41,10 +41,10 @@ if __name__ == "__main__":
 
     root = ctk.CTk()
     root.geometry("500x400")
-    root.title("Vivi Animation Test")
+    root.title("Smile Animation Test")
 
     # Create an instance of ViviAnimation for testing
-    vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=150, height=150, frame_delay=50, x=100, y=100)
+    smile_animation = SmileAnimation(root, "smile.gif", width=150, height=150, frame_delay=50, x=100, y=100)
 
     # Run the main loop
     root.mainloop()

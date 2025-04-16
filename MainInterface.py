@@ -9,8 +9,10 @@ from goveeTest import *
 import asyncio
 from VoiceAgent import ConversationManager
 from Vivi import ViviAnimation
+from Smile import SmileAnimation
 from event_manager import event_manager
 from smarthome import SmartHome
+import musicTest
 
 # Function to activate the smart home
 def activate_smart_home():
@@ -136,31 +138,13 @@ def place_sym():
 # Function to show "SMILE" first
 def show_smile():
     Quote_write.configure(text="")  # Removes quote from screen (need to improve technique for this)
-    play_video()
-    root.after(16000, start_clock)  # After 10 seconds, show date and time
-
-# Function to play video before showing widgets
-def play_video():
-    video_label = ctk.CTkLabel(root, text="")  # Create a label to hold video frames
-    video_label.place(x=0.5, y=0.5, relwidth=1, relheight=1)  # Make video cover full screen
-
-    # Load the video file (use a path to your video file)
-    video_path = "Neon Smile.mp4"  # Replace this with the path to your video file
-    video = imageio.get_reader(video_path)
-
-    def stream_video():
-        for frame in video:
-            frame_image = Image.fromarray(frame)  # Convert frame to image
-            frame_image = frame_image.resize((size["screen_width"], size["screen_height"]), Image.Resampling.LANCZOS)  # Resize to fit screen
-            frame_photo = ImageTk.PhotoImage(frame_image)
-            video_label.configure(image=frame_photo)
-            video_label.image = frame_photo
-            root.update()  # Update the root window
-            time.sleep(0.005)  # Control playback speed (~30 fps)
-
-        video_label.destroy()  # Remove video label after playback
-
-    root.after(0, stream_video)
+    smile_animation = SmileAnimation(root, "smile.gif", width=size["screen_width"], height=size["screen_height"], frame_delay=200, x=0, y=0)
+    
+    def remove_smile_animation():
+        smile_animation.label.destroy()
+    
+    root.after(3000, remove_smile_animation)  # Remove smile animation after 3 seconds
+    root.after(3000, start_clock)  # After 10 seconds, show date and time
 
 # Function to start showing date and time
 def start_clock():
@@ -196,14 +180,126 @@ def move_clock_up(y):
 
 # Function to handle "Ask Mirror" button click
 def ask_mirror():
-    #ask_mirror_button.configure(text="Listening...")  # Change button text
-    #ask_mirror_button.update_idletasks()  # Update the button text immediately
-    #get_audio()
-    # ask_mirror_button.configure(text="Ask Mirror")  # Restore button text
+    ask_mirror_button.configure(text="Listening...")  # Change button text
+    ask_mirror_button.update_idletasks()  # Update the button text immediately
+    get_audio()
+    ask_mirror_button.configure(text="Ask Mirror")  # Restore button text
     print("Ask Mirror Clicked!")
 
 def create_smart_home_widget():
     smarthome = SmartHome(root)  # Create an instance of the SmartHome class
+
+def close_widget(frame):
+    frame.place_forget()
+
+# Creates a new music player that runs in the background
+newPlayer = musicTest.MusicPlayer()
+
+def handle_music_widget_action(cmd, songLabel):
+    current_song = newPlayer.main(cmd)
+    songLabel.configure(text=current_song)
+
+def music_widget():
+    frame = ctk.CTkFrame(master=root, width = 500, height=500, fg_color="black", border_width=3, border_color="white")
+    frame.place(relx=.5, rely=.5, anchor="center", bordermode = 'outside')
+    for i in range(2):
+        frame.rowconfigure(i, weight=1)
+    for i in range(3):
+        frame.columnconfigure(i, weight=1)
+
+    songLabel = ctk.CTkLabel(frame, text=newPlayer.currentFile, font=("Arial", 24), text_color="white", fg_color="black")
+    closeWindow = ctk.CTkButton(frame, text="X", font=("Arial", 24), text_color="white", fg_color="black", width=20, command=lambda: close_widget(frame))
+    shuffleButton = ctk.CTkButton(frame, text="Shuffle", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("shuffle", songLabel))
+    skipButton = ctk.CTkButton(frame, text="Skip", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("skip", songLabel))
+    pauseButton = ctk.CTkButton(frame, text="Pause", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("pause", songLabel))
+
+    songLabel.grid(column = 0, row = 0, columnspan = 3, pady = 3, padx = 13)
+    closeWindow.grid(column = 3, row = 0, pady = 3, padx = 3)
+    shuffleButton.grid(column = 0, row = 1, pady = 3, padx = 3)
+    skipButton.grid(column = 1, row = 1, pady = 3, padx = 3)
+    pauseButton.grid(column = 2, row = 1, pady = 3, padx = 3) 
+
+    selection_box_commands(frame, 0, 1)  
+
+def move_selection_box(frame, currentCol, currentRow, nextCol, nextRow):    
+    nextWidget = frame.grid_slaves(row=nextRow, column=nextCol)    # locates the widget using corresponding row and column, returns a list
+    nextWidget[0].configure(border_width=3, border_color='white')   # Accesses first widget in the list and turns the border white
+
+    currentWidget = frame.grid_slaves(row=currentRow, column=currentCol) # Locates the current selected widget
+    currentWidget[0].configure(border_width=3, border_color='black')  # Changes the border to black
+
+    return currentCol, currentRow, nextCol, nextRow, nextWidget  #returns updated variables
+
+# Function to ask the user to enter a command for the selection box
+def selection_box_commands(frame, col, row):
+
+    currentCol = col
+    currentRow = row
+    nextCol = 0
+    nextRow = 0
+
+    gridSize = frame.grid_size() # gets grid size
+    print(f"Size of grid: rows={gridSize[1]}, columns={gridSize[0]}") #for debugging
+
+    currentSelectedWidget = frame.grid_slaves(row=currentRow, column=currentCol) #retrives button widget in top left corner
+    currentSelectedWidget[0].configure(border_width=3, border_color='white') #Visually selects it using a white border
+
+    print(f"Enter a command: up(u), down(d), left(l), right(r), select(s), exit(e): ") # Asks user for command input
+    while (True):
+        command = input(f"command: ")
+        if (command == 'up' or command == 'u'):
+            print(f"Command entered: up")
+            try: 
+                nextRow = currentRow -2 # moves selection to upper row, specific for smart home widget
+                currentCol, currentRow, nextCol, nextRow, currentSelectedWidget = move_selection_box(frame, currentCol, currentRow, nextCol, nextRow)
+                currentRow = nextRow
+            except:
+                if (nextRow < 0): 
+                    print(f"Out of grid range")
+            
+        elif(command == 'down' or command == 'd'):
+            print(f"Command entered: down")
+            try: 
+                nextRow = currentRow +2 # moves selection to lower row, specific for smart home widget
+                currentCol, currentRow, nextCol, nextRow, currentSelectedWidget = move_selection_box(frame, currentCol, currentRow, nextCol, nextRow)
+                currentRow = nextRow                
+            except:
+                if (nextRow > gridSize[1]-1): 
+                    print(f"Out of grid range")    
+
+        elif(command == 'left' or command == 'l'):
+            print(f"Command entered: left")            
+            try:     
+                nextCol = currentCol -1 # moves selection to left column
+                nextRow = currentRow
+                currentCol, currentRow, nextCol, nextRow, currentSelectedWidget = move_selection_box(frame, currentCol, currentRow, nextCol, nextRow)
+                currentCol = nextCol
+            except:
+                if (nextCol < 0): 
+                    print(f"Out of grid range")
+
+        elif(command == 'right' or command == 'r'):
+            print(f"Command entered: right")
+            try:
+                nextCol = currentCol +1  # moves selection to right column
+                nextRow = currentRow
+                currentCol, currentRow, nextCol, nextRow, currentSelectedWidget = move_selection_box(frame, currentCol, currentRow, nextCol, nextRow)
+                currentCol = nextCol            
+            except:
+                if (nextCol > gridSize[0]-1): 
+                    print(f"Out of grid range")
+
+        elif(command == 'select' or command == 's'):
+            print(f"Command entered: select")
+            currentSelectedWidget[0].invoke()  # runs command associated with the currently selected button
+
+        elif(command == 'exit' or command == 'e'):
+            print(f"Exiting loop")
+            close_widget(frame)
+            break
+
+        else:
+            print(f"not a command")   
 
 # Function to show/hide the To-Do list mini-screen
 def toggle_todo_list():
@@ -239,7 +335,7 @@ weather_widget = ctk.CTkLabel(root, text=f"{temp} Degrees Celsius\n{clouds}% Clo
 todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", size["label_font_size"]), text_color="white")
 # todo_widget.pack(pady=10, padx=20, anchor="w")  # Left-align with padding
 todo_widget.bind("<Button-1>", lambda e: toggle_todo_list())  # Make the To-Do list clickable
-music_widget = ctk.CTkLabel(root, text="Playing: Song XYZ", font=("Arial", size["label_font_size"]))
+music_widget_button = ctk.CTkButton(root, text="Playing: Song XYZ", font=("Arial", size["label_font_size"]), command=lambda: music_widget())
 smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", size["label_font_size"]), command=lambda: create_smart_home_widget())
 settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", size["label_font_size"]))
 ask_mirror_button = ctk.CTkButton(root, text="Say 'Hey Vivi!'", font=("Arial", size["label_font_size"]), command=ask_mirror)
@@ -262,11 +358,11 @@ def show_widgets():
         calendar_widget.place(x=size["calendar_x"], y=size["calendar_content_y"])
         weather_widget.place(x=size["weather_x"], y=size["weather_content_y"])
         todo_widget.place(x=size["todo_x"], y=size["todo_content_y"])
-        music_widget.place(x=size["music_x"], y=size["music_content_y"])
+        music_widget_button.place(x=size["music_x"], y=size["music_content_y"])
         smart_home_button.place(x=size["smart_home_x"], y=size["smart_home_y"])
         settings_widget.place(x=size["settings_x"], y=size["settings_content_y"])
         ask_mirror_button.place(x=size["ask_mirror_x"], y=size["ask_mirror_y"])
-        vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=75, height=75, frame_delay=50, x=450, y=850)
+        vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=75, height=75, frame_delay=50, x=200, y=200)
 
         shown = True
 

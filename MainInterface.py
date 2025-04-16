@@ -89,6 +89,7 @@ size = {
 }
 
 Small = True  # Flag to determine if small mode is enabled
+
 if Small:
     size = {key: math.floor(value / 2) for key, value in size.items()}  # Halve the values for small mode
 

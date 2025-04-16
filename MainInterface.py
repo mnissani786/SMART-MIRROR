@@ -45,7 +45,10 @@ def open_music_widget():
     music_widget()  # Open the music widget
 
 def close_music_widget():
-    music_label.place_forget()  # Hide the music label
+    global music_widget_frame
+    if music_widget_frame is not None:
+        music_widget_frame.place_forget()  # Hide the frame
+        music_widget_frame = None  # Reset the global variable
 
 # Register events with the event manager
 event_manager.register_event("music_play", play_music)
@@ -237,6 +240,8 @@ def handle_music_widget_action(cmd, songLabel):
     current_song = newPlayer.main(cmd)
     songLabel.configure(text=current_song)
 
+music_widget_frame = None
+
 def music_widget():
     frame = ctk.CTkFrame(master=root, width = 500, height=500, fg_color="black", border_width=3, border_color="white")
     frame.place(relx=.5, rely=.5, anchor="center", bordermode = 'outside')
@@ -257,7 +262,7 @@ def music_widget():
     skipButton.grid(column = 1, row = 1, pady = 3, padx = 3)
     pauseButton.grid(column = 2, row = 1, pady = 3, padx = 3) 
 
-    selection_box_commands(frame, 0, 1)  
+    # selection_box_commands(frame, 0, 1)  
 
 def move_selection_box(frame, currentCol, currentRow, nextCol, nextRow):    
     nextWidget = frame.grid_slaves(row=nextRow, column=nextCol)    # locates the widget using corresponding row and column, returns a list

@@ -40,8 +40,8 @@ class AnimatedGIF:
         return frame
 
 # Constants and Global Variables
-inactivity_timeout = 30  # seconds
-turn_off_timeout = 30  # seconds after inactivity
+inactivity_timeout = 30000  # seconds
+turn_off_timeout = 3000  # seconds after inactivity
 last_activity_time = time.time()
 
 # Function to activate the smart home
@@ -198,7 +198,7 @@ tasks = [
 ]
 
 # Create the clock label
-clock = ctk.CTkLabel(root, font=("Aptos (Body)", size["font_size"]), text_color="white", fg_color="#000000")
+clock = ctk.CTkLabel(root, font=("Aptos (Body)", size["font_size"]), text_color="white", fg_color="#000000", justify="center", anchor="center")
 clock.place(x=size["screen_width"]/2, y=size["screen_height"]/2, anchor="center")  # Exactly in the center of the screen
 
 updating = False  # Flag to control time updates
@@ -433,10 +433,10 @@ def hide_todo_list(event):
     if todo_frame.winfo_ismapped():  # Only hide if it is currently visible
         todo_frame.place_forget()
 
-for i in range(3):
-    root.grid_columnconfigure(i, weight=1)
-for i in range(3):
-    root.grid_rowconfigure(i, weight=1)
+# for i in range(3):
+#     root.grid_columnconfigure(i, weight=1)
+# for i in range(3):
+#     root.grid_rowconfigure(i, weight=1)
     
 def exit_news():
     news_frame.grid_forget()

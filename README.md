@@ -23,28 +23,41 @@ As of submitting, this requirements.txt should be up to date with pip freeze > r
 ## Vivi Voice Commands:
 #### Voice Assistance
 "Hey, Vivi" -- moves Vivi Voice Assistant from listening mode to active mode.
+
 ["Goodbye", "Exit", "Close", "Bye"] -- moves Vivi Voice Assistant from active mode to listening mode
 
 #### Smart Home Widget
 "Open Smart Home" -- Opens Smart Home Widget
+
 ["Red", "Orange", "Yellow", "Green", "Blue", "Purple] -- changes LED light strip colors and Govee Smart Lamp color
+
 "Exit Smart Home" -- Exits Smart Home Widget
 
 #### Music Widget
 "Open Music" -- Opens Music Widget
+
 "Play Music" -- Starts song
+
 "Skip Music" -- Skips song
+
 "Pause Song" -- Pauses song
+
 "Shuffle Music" -- Shuffles Playlist
+
 "Exit Music" -- Exits Music Widget
+
 
 #### Weather Widget
 "Open Weather" -- Opens Weather Widget
+
 "Exit Weather" -- Exits Weather Widget
+
 
 #### News Widget
 "Open News" -- Opens News Widget
+
 "Exit News" -- Exits News Widget
+
 
 ## Goals:
 #### 1. Make Functioning widgets that gather data and respond to user inputs ✅

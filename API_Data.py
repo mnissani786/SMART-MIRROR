@@ -10,7 +10,7 @@ lat = 42.6744918823
 lon = -83.2205200195
 params = { "lat" : lat, "lon" : lon }
 api_url = 'https://api.api-ninjas.com/v1/weather'
-headers = {'X-Api-Key': 'XbIJXr6qNj3Cl3sZw7v5oQ==QephRx1PSyj683q8'}
+headers = {'X-Api-Key': 'wpErX6cdHePXtZcrKbG37A==dnIa2YgDjQiS2sKs'}
 response = requests.get(api_url, headers=headers, params = params)
 if response.status_code == requests.codes.ok:
         data = response.json()  # Parse JSON response
@@ -57,7 +57,7 @@ if int(clouds) == 100:
 
 """Quotes"""
 api_url = 'https://api.api-ninjas.com/v1/quotes'
-headers = {'X-Api-Key': 'XbIJXr6qNj3Cl3sZw7v5oQ==QephRx1PSyj683q8'}
+headers = {'X-Api-Key': 'wpErX6cdHePXtZcrKbG37A==dnIa2YgDjQiS2sKs'}
 
 response = requests.get(api_url, headers=headers)
 
@@ -71,7 +71,7 @@ else:
 
 
 """News API"""
-api_url = 'https://newsdata.io/api/1/latest?apikey=pub_7498696714b447bc7f0e004260a0cce46ee01&q=detroit&language=en&size=6'
+api_url = 'https://newsdata.io/api/1/latest?apikey=pub_8092023f042bfc54d1c397a0047b307fe7875&q=detroit&language=en&size=6'
 
 response = requests.get(api_url)
 news_list = "\n" * 2

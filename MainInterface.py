@@ -82,6 +82,18 @@ if not Developing:
         if music_widget_frame is not None:
             music_widget_frame.place_forget()  # Hide the frame
             music_widget_frame = None  # Reset the global variable
+    
+    def open_news_widget():
+        news_screen()
+    
+    def close_news_widget():
+        news_exit()
+    
+    def open_weather_widget():
+        weather_screen()
+    
+    def close_weather_widget():
+        weather_exit()
 
     # Register events with the event manager
     event_manager.register_event("music_play", play_music)
@@ -90,7 +102,10 @@ if not Developing:
     event_manager.register_event("music_shuffle", shuffle_music)
     event_manager.register_event("open_music_widget", open_music_widget)
     event_manager.register_event("close_music_widget", close_music_widget)
-
+    event_manager.register_event("open_news_widget", open_news_widget)
+    event_manager.register_event("close_news_widget", close_news_widget)
+    event_manager.register_event("open_weather_widget", open_weather_widget)
+    event_manager.register_event("close_weather_widget", close_weather_widget)
 
     def activate_music():
         global music_player
@@ -444,7 +459,7 @@ for i in range(3):
 for i in range(3):
     root.grid_rowconfigure(i, weight=1)
     
-def exit_news():
+def news_exit():
     news_frame.grid_forget()
     news_frame.place_forget()
     global shown
@@ -492,7 +507,7 @@ weather_frame = ctk.CTkFrame(master=root, width=500, height= 700, fg_color= 'bla
 sample_text = ctk.CTkLabel(root,text = "this is the main screen",font = ("Aptos (Body)", 20), text_color = "white", wraplength= 425)
 news_pic = ctk.CTkImage(dark_image= Image.open(news_pic), size= (80,80))
 news_open = ctk.CTkButton(root, image = news_pic, text="", command=news_screen, fg_color= "transparent", width= 80, height= 80)
-news_close = ctk.CTkButton(news_frame, text="Close News", command=exit_news)
+news_close = ctk.CTkButton(news_frame, text="Close News", command=news_exit)
 weather_icon = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (80,80))
 weather_open = ctk.CTkButton(root, image = weather_icon, text = "", command=weather_screen, width= 80, height= 80, fg_color= "transparent")
 weather_close = ctk.CTkButton(weather_frame, text="Exit", command=weather_exit)

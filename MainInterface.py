@@ -243,18 +243,23 @@ def handle_music_widget_action(cmd, songLabel):
 music_widget_frame = None
 
 def music_widget():
-    frame = ctk.CTkFrame(master=root, width = 500, height=500, fg_color="black", border_width=3, border_color="white")
-    frame.place(relx=.5, rely=.5, anchor="center", bordermode = 'outside')
-    for i in range(2):
-        frame.rowconfigure(i, weight=1)
-    for i in range(3):
-        frame.columnconfigure(i, weight=1)
+    global music_widget_frame
+    if music_widget_frame is not None:
+        return
+    
+    music_widget_frame = ctk.CTkFrame(master=root, width = 500, height=500, fg_color="black", border_width=3, border_color="white")
+    music_widget_frame.place(relx=.5, rely=.5, anchor="center", bordermode = 'outside')
 
-    songLabel = ctk.CTkLabel(frame, text=newPlayer.currentFile, font=("Arial", 24), text_color="white", fg_color="black")
-    closeWindow = ctk.CTkButton(frame, text="X", font=("Arial", 24), text_color="white", fg_color="black", width=20, command=lambda: close_widget(frame))
-    shuffleButton = ctk.CTkButton(frame, text="Shuffle", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("shuffle", songLabel))
-    skipButton = ctk.CTkButton(frame, text="Skip", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("skip", songLabel))
-    pauseButton = ctk.CTkButton(frame, text="Pause", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("pause", songLabel))
+    for i in range(2):
+        music_widget_frame.rowconfigure(i, weight=1)
+    for i in range(3):
+        music_widget_frame.columnconfigure(i, weight=1)
+
+    songLabel = ctk.CTkLabel(music_widget_frame, text=newPlayer.currentFile, font=("Arial", 24), text_color="white", fg_color="black")
+    closeWindow = ctk.CTkButton(music_widget_frame, text="X", font=("Arial", 24), text_color="white", fg_color="black", width=20, command=lambda: close_music_widget)
+    shuffleButton = ctk.CTkButton(music_widget_frame, text="Shuffle", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("shuffle", songLabel))
+    skipButton = ctk.CTkButton(music_widget_frame, text="Skip", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("skip", songLabel))
+    pauseButton = ctk.CTkButton(music_widget_frame, text="Pause", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("pause", songLabel))
 
     songLabel.grid(column = 0, row = 0, columnspan = 3, pady = 3, padx = 13)
     closeWindow.grid(column = 3, row = 0, pady = 3, padx = 3)

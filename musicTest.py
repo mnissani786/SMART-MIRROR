@@ -41,13 +41,14 @@ class MusicPlayer:
                     return nextFile
                 time.sleep(1)        
                 
-
+    # toggles pause
     def togglePause(self):
-        self.player.pause() #toggles 
+        self.player.pause() 
 
+    # Retrieves song to play it
     def play(self):
         self.currentFile = self.fileSelect()
-        print(f"Current Song: {self.currentFile}")
+        # print(f"Current Song: {self.currentFile}")
         
         # Get the file path and create the VLC player
         self.file_path = os.path.join(self.directory, self.currentFile)
@@ -56,6 +57,7 @@ class MusicPlayer:
         self.player.play()
         return self.player    
 
+    # Plays the next song
     def skip(self, event):
         if self.files:
             self.player = self.play()

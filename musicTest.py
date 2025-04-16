@@ -6,19 +6,6 @@ import random
 import threading
 from threading import current_thread
 from threading import Event
-
-import sys
-import ctypes
-
-# Get the absolute path to the VLC DLL directory you bundled
-vlc_dir = os.path.join(os.path.dirname(__file__), 'vlc')
-
-# Add the VLC directory to the DLL search path (Python 3.8+)
-os.add_dll_directory(vlc_dir)
-
-# You can also explicitly load the DLL to ensure it's initialized
-ctypes.CDLL(os.path.join(vlc_dir, 'libvlc.dll'))
-
 import vlc
 
 class MusicPlayer:

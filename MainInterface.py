@@ -11,6 +11,7 @@ from VoiceAgent import ConversationManager
 from Vivi import ViviAnimation
 from event_manager import event_manager
 from smarthome import SmartHome
+import musicTest
 
 # Function to activate the smart home
 def activate_smart_home():
@@ -203,6 +204,30 @@ def ask_mirror():
 
 def create_smart_home_widget():
     smarthome = SmartHome(root)  # Create an instance of the SmartHome class
+
+# Creates a new music player that runs in the background
+newPlayer = musicTest.MusicPlayer()
+
+# Function to show music UI
+def music_widget():
+    frame = ctk.CTkFrame(master=root, width = 500, height=500, fg_color="black", border_width=3, border_color="white")
+    frame.place(relx=.5, rely=.5, anchor="center", bordermode = 'outside')
+    for i in range(2):
+        frame.rowconfigure(i, weight=1)
+    for i in range(3):
+        frame.columnconfigure(i, weight=1)
+
+    songLabel = ctk.CTkLabel(frame, text=newPlayer.currentFile, font=("Arial", 24), text_color="white", fg_color="black")
+    closeWindow = ctk.CTkButton(frame, text="X", font=("Arial", 24), text_color="white", fg_color="black", width=20, command=lambda: close_widget(frame))
+    shuffleButton = ctk.CTkButton(frame, text="Shuffle", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: newPlayer.main("shuffle"))
+    skipButton = ctk.CTkButton(frame, text="Skip", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: newPlayer.main("skip"))
+    pauseButton = ctk.CTkButton(frame, text="Pause", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: newPlayer.main("pause"))
+
+    songLabel.grid(column = 0, row = 0, columnspan = 3, pady = 3, padx = 13)
+    closeWindow.grid(column = 3, row = 0, pady = 3, padx = 3)
+    shuffleButton.grid(column = 0, row = 1, pady = 3, padx = 3)
+    skipButton.grid(column = 1, row = 1, pady = 3, padx = 3)
+    pauseButton.grid(column = 2, row = 1, pady = 3, padx = 3)   
 
 # Function to show/hide the To-Do list mini-screen
 def toggle_todo_list():

@@ -78,8 +78,11 @@ class MusicPlayer:
             print("No files found in directory.")
 
     # for debugging, will transfer to UI design
-    def main(self, cmd):   
-        if cmd == "pause":
+    def main(self, cmd):
+        if cmd == "play":
+            self.currentSong = threading.Thread(target=self.skip, args=(self.event,)) 
+            self.currentSong.start() # Creates the thread to play the music
+        elif cmd == "pause":
             self.togglePause()
         elif cmd == "skip":
             self.event.set()  # Changes event to true, meaning that skip has been called
@@ -87,7 +90,6 @@ class MusicPlayer:
             self.event.clear()  # Resets event to false
             self.currentSong = threading.Thread(target=self.skip, args=(self.event,))  # Creates the thread to play the music
             self.currentSong.start()
-            
         elif cmd == "shuffle":
             self.shuffle = self.toggleShuffle()
             print("Shuffle set to: " +str(self.shuffle))

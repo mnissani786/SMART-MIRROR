@@ -208,6 +208,31 @@ class ConversationManager:
             while True:
                 await get_transcript(handle_full_sentence)
 
+                if "play music" in self.transcription_response.lower():
+                    print("Playing music...")
+                    tts.speak("Playing music.")
+                    event_manager.trigger_event("music_play")
+                elif "pause music" in self.transcription_response.lower():
+                    print("Pausing music...")
+                    tts.speak("Pausing music.")
+                    event_manager.trigger_event("music_pause")
+                elif "skip music" in self.transcription_response.lower():
+                    print("Skipping music...")
+                    tts.speak("Skipping music.")
+                    event_manager.trigger_event("music_skip")
+                elif "shuffle music" in self.transcription_response.lower():
+                    print("Shuffling music...")
+                    tts.speak("Shuffling music.")
+                    event_manager.trigger_event("music_shuffle")
+                elif "open music" in self.transcription_response.lower():
+                    print("Opening music...")
+                    tts.speak("Opening music.")
+                    event_manager.trigger_event("open_music_widget")
+                elif "close music" in self.transcription_response.lower():
+                    print("Closing music...")
+                    tts.speak("Closing music.")
+                    event_manager.trigger_event("close_music_widget")
+            
                 if On_SmartHome:
                     if "red" in self.transcription_response.lower():
                         print("Turning the light red...")
@@ -233,7 +258,7 @@ class ConversationManager:
                         print("Turning the light purple...")
                         tts.speak("Govee Light Purplse.")
                         changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(160, 0, 255)))
-                    if "close" in self.transcription_response.lower():
+                    if "exit" in self.transcription_response.lower():
                         print("Closing the smart home widget...")
                         tts.speak("Closing smart home.")
                         event_manager.trigger_event("smart_home_deactivate")  # Trigger the event

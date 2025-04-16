@@ -13,6 +13,7 @@ from Smile import SmileAnimation
 from event_manager import event_manager
 from smarthome import SmartHome
 import musicTest
+from musicTest import MusicPlayer 
 
 # Function to activate the smart home
 def activate_smart_home():
@@ -25,6 +26,42 @@ def deactivate_smart_home():
         smarthome.close_widget()
         smarthome = None  # Set to None to indicate it's closed
     # find a way to destroy/hide the smarthome widget.
+
+
+# Register music-related events
+def play_music():
+    handle_music_widget_action("play", music_label)
+
+def pause_music():
+    handle_music_widget_action("pause", music_label)
+
+def skip_music():
+    handle_music_widget_action("skip", music_label)
+
+def shuffle_music():
+    handle_music_widget_action("shuffle", music_label)
+
+def open_music_widget():
+    music_widget()  # Open the music widget
+
+def close_music_widget():
+    global music_widget_frame
+    if music_widget_frame is not None:
+        music_widget_frame.place_forget()  # Hide the frame
+        music_widget_frame = None  # Reset the global variable
+
+# Register events with the event manager
+event_manager.register_event("music_play", play_music)
+event_manager.register_event("music_pause", pause_music)
+event_manager.register_event("music_skip", skip_music)
+event_manager.register_event("music_shuffle", shuffle_music)
+event_manager.register_event("open_music_widget", open_music_widget)
+event_manager.register_event("close_music_widget", close_music_widget)
+
+
+def activate_music():
+    global music_player
+    music_player = MusicPlayer(root)  # Create an instance of the MusicPlayer class
 
 event_manager.register_event("smart_home_activate", activate_smart_home)
 event_manager.register_event("smart_home_deactivate", deactivate_smart_home)
@@ -86,6 +123,8 @@ size = {
     "label_font_size": 48,
     "ask_mirror_x": 540,
     "ask_mirror_y": 1728,
+    "vivi_x": 800,
+    "vivi_y": 1728
 }
 
 Small = True  # Flag to determine if small mode is enabled
@@ -104,6 +143,10 @@ root.configure(fg_color="#000000")
 
 # Start the asyncio loop alongside the GUI
 run_asyncio_loop()
+
+# Create a label to display the current song (used in the music widget)
+music_label = ctk.CTkLabel(root, text="No song playing", font=("Arial", 24), text_color="white", fg_color="black")
+
 
 # Sample list of tasks for the To-Do widget
 tasks = [
@@ -200,19 +243,26 @@ def handle_music_widget_action(cmd, songLabel):
     current_song = newPlayer.main(cmd)
     songLabel.configure(text=current_song)
 
-def music_widget():
-    frame = ctk.CTkFrame(master=root, width = 500, height=500, fg_color="black", border_width=3, border_color="white")
-    frame.place(relx=.5, rely=.5, anchor="center", bordermode = 'outside')
-    for i in range(2):
-        frame.rowconfigure(i, weight=1)
-    for i in range(3):
-        frame.columnconfigure(i, weight=1)
+music_widget_frame = None
 
-    songLabel = ctk.CTkLabel(frame, text=newPlayer.currentFile, font=("Arial", 24), text_color="white", fg_color="black")
-    closeWindow = ctk.CTkButton(frame, text="X", font=("Arial", 24), text_color="white", fg_color="black", width=20, command=lambda: close_widget(frame))
-    shuffleButton = ctk.CTkButton(frame, text="Shuffle", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("shuffle", songLabel))
-    skipButton = ctk.CTkButton(frame, text="Skip", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("skip", songLabel))
-    pauseButton = ctk.CTkButton(frame, text="Pause", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("pause", songLabel))
+def music_widget():
+    global music_widget_frame
+    if music_widget_frame is not None:
+        return
+    
+    music_widget_frame = ctk.CTkFrame(master=root, width = 500, height=500, fg_color="black", border_width=3, border_color="white")
+    music_widget_frame.place(relx=.5, rely=.5, anchor="center", bordermode = 'outside')
+
+    for i in range(2):
+        music_widget_frame.rowconfigure(i, weight=1)
+    for i in range(3):
+        music_widget_frame.columnconfigure(i, weight=1)
+
+    songLabel = ctk.CTkLabel(music_widget_frame, text=newPlayer.currentFile, font=("Arial", 24), text_color="white", fg_color="black")
+    closeWindow = ctk.CTkButton(music_widget_frame, text="X", font=("Arial", 24), text_color="white", fg_color="black", width=20, command=lambda: close_music_widget)
+    shuffleButton = ctk.CTkButton(music_widget_frame, text="Shuffle", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("shuffle", songLabel))
+    skipButton = ctk.CTkButton(music_widget_frame, text="Skip", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("skip", songLabel))
+    pauseButton = ctk.CTkButton(music_widget_frame, text="Pause", font=("Arial", 20), text_color="white", fg_color="black", width=20, command=lambda: handle_music_widget_action("pause", songLabel))
 
     songLabel.grid(column = 0, row = 0, columnspan = 3, pady = 3, padx = 13)
     closeWindow.grid(column = 3, row = 0, pady = 3, padx = 3)
@@ -220,7 +270,7 @@ def music_widget():
     skipButton.grid(column = 1, row = 1, pady = 3, padx = 3)
     pauseButton.grid(column = 2, row = 1, pady = 3, padx = 3) 
 
-    selection_box_commands(frame, 0, 1)  
+    # selection_box_commands(frame, 0, 1)  
 
 def move_selection_box(frame, currentCol, currentRow, nextCol, nextRow):    
     nextWidget = frame.grid_slaves(row=nextRow, column=nextCol)    # locates the widget using corresponding row and column, returns a list
@@ -336,10 +386,10 @@ weather_widget = ctk.CTkLabel(root, text=f"{temp} Degrees Celsius\n{clouds}% Clo
 todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", size["label_font_size"]), text_color="white")
 # todo_widget.pack(pady=10, padx=20, anchor="w")  # Left-align with padding
 todo_widget.bind("<Button-1>", lambda e: toggle_todo_list())  # Make the To-Do list clickable
-music_widget_button = ctk.CTkButton(root, text="Playing: Song XYZ", font=("Arial", size["label_font_size"]), command=lambda: music_widget())
+music_widget_button = ctk.CTkButton(root, text="Say: Open Music", font=("Arial", size["label_font_size"]), command=lambda: music_widget())
 smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", size["label_font_size"]), command=lambda: create_smart_home_widget())
 settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", size["label_font_size"]))
-ask_mirror_button = ctk.CTkButton(root, text="Say 'Hey Vivi!'", font=("Arial", size["label_font_size"]), command=ask_mirror)
+ask_mirror_button = ctk.CTkButton(root, text="Say: 'Hey Vivi!'", font=("Arial", size["label_font_size"]), command=ask_mirror)
 
 # Function to show widgets using CustomTkinter
 def show_widgets():
@@ -363,7 +413,7 @@ def show_widgets():
         smart_home_button.place(x=size["smart_home_x"], y=size["smart_home_y"])
         settings_widget.place(x=size["settings_x"], y=size["settings_content_y"])
         ask_mirror_button.place(x=size["ask_mirror_x"], y=size["ask_mirror_y"])
-        vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=75, height=75, frame_delay=50, x=200, y=200)
+        vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=75, height=75, frame_delay=50, x=size["vivi_x"], y=size["vivi_y"])
 
         shown = True
 

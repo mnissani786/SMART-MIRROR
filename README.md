@@ -1,9 +1,11 @@
 # Welcome to Reflective Assistant!
 
 By Kaeden Bryer, Christina Carvalho, Maria Echeverri Solis and Malik Issani
+For CSI2999 at Oakland University
 
-This is our group's sophomore project at Oakland University. Reflective Assistant is the software for a smart mirror
-which curates essential information for the user's morning.
+## About
+
+Reflective Assistant is a Raspberry Pi powered smart mirror that brings essential information to your bedside every morning. This includes current date, time, news, and weather data. Reflective Assistant is complete with a real time voice assistant named "Vivi" to navigate widgets and conduct real-time conversation, powered by Deepgram and Groq. Alternatively, Reflective Assistant is also controllable with Raspcontroller. Reflective Assistant is experimenting with compatibility with other Smart Home devices, and is currently compatible with: Govee Smart Lamp.
 
 
 ## How to Run! (Read this before running)

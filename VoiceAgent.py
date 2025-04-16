@@ -224,6 +224,14 @@ class ConversationManager:
                     print("Shuffling music...")
                     tts.speak("Shuffling music.")
                     event_manager.trigger_event("music_shuffle")
+                elif "open music" in self.transcription_response.lower():
+                    print("Opening music...")
+                    tts.speak("Opening music.")
+                    event_manager.trigger_event("open_music_widget")
+                elif "close music" in self.transcription_response.lower():
+                    print("Closing music...")
+                    tts.speak("Closing music.")
+                    event_manager.trigger_event("close_music_widget")
             
                 if On_SmartHome:
                     if "red" in self.transcription_response.lower():

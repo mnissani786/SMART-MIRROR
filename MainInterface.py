@@ -41,11 +41,19 @@ def skip_music():
 def shuffle_music():
     handle_music_widget_action("shuffle", music_label)
 
+def open_music_widget():
+    music_widget()  # Open the music widget
+
+def close_music_widget():
+    music_label.place_forget()  # Hide the music label
+
 # Register events with the event manager
 event_manager.register_event("music_play", play_music)
 event_manager.register_event("music_pause", pause_music)
 event_manager.register_event("music_skip", skip_music)
 event_manager.register_event("music_shuffle", shuffle_music)
+event_manager.register_event("open_music_widget", open_music_widget)
+event_manager.register_event("close_music_widget", close_music_widget)
 
 
 def activate_music():
@@ -365,10 +373,10 @@ weather_widget = ctk.CTkLabel(root, text=f"{temp} Degrees Celsius\n{clouds}% Clo
 todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", size["label_font_size"]), text_color="white")
 # todo_widget.pack(pady=10, padx=20, anchor="w")  # Left-align with padding
 todo_widget.bind("<Button-1>", lambda e: toggle_todo_list())  # Make the To-Do list clickable
-music_widget_button = ctk.CTkButton(root, text="Playing: Song XYZ", font=("Arial", size["label_font_size"]), command=lambda: music_widget())
+music_widget_button = ctk.CTkButton(root, text="Say: Open Music", font=("Arial", size["label_font_size"]), command=lambda: music_widget())
 smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", size["label_font_size"]), command=lambda: create_smart_home_widget())
 settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", size["label_font_size"]))
-ask_mirror_button = ctk.CTkButton(root, text="Say 'Hey Vivi!'", font=("Arial", size["label_font_size"]), command=ask_mirror)
+ask_mirror_button = ctk.CTkButton(root, text="Say: 'Hey Vivi!'", font=("Arial", size["label_font_size"]), command=ask_mirror)
 
 # Function to show widgets using CustomTkinter
 def show_widgets():

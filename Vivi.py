@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk, ImageSequence
 
-class ViviAnimation:
+class GifAnimation:
     def __init__(self, parent, gif_path, width=100, height=100, frame_delay=50, x=0, y=0):
         self.parent = parent
         self.gif_path = gif_path

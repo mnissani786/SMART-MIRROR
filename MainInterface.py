@@ -9,12 +9,15 @@ import imageio  # For video playback
 from goveeTest import *
 import asyncio
 from VoiceAgent import ConversationManager
-from Vivi import ViviAnimation
+from Vivi import GifAnimation
 from Smile import SmileAnimation
 from event_manager import event_manager
 from smarthome import SmartHome
 import musicTest
 from musicTest import MusicPlayer 
+
+#made a flag to help me develop
+Developing = False
 
 # Utility Classes
 class AnimatedGIF:
@@ -44,77 +47,78 @@ inactivity_timeout = 30000  # seconds
 turn_off_timeout = 3000  # seconds after inactivity
 last_activity_time = time.time()
 
-# Function to activate the smart home
-def activate_smart_home():
-    global smarthome
-    smarthome = SmartHome(root)  # Create an instance of the SmartHome class
+if not Developing:
+    # Function to activate the smart home
+    def activate_smart_home():
+        global smarthome
+        smarthome = SmartHome(root)  # Create an instance of the SmartHome class
 
-def deactivate_smart_home():
-    global smarthome
-    if smarthome:
-        smarthome.close_widget()
-        smarthome = None  # Set to None to indicate it's closed
-    # find a way to destroy/hide the smarthome widget.
-
-
-# Register music-related events
-def play_music():
-    handle_music_widget_action("play", music_label)
-
-def pause_music():
-    handle_music_widget_action("pause", music_label)
-
-def skip_music():
-    handle_music_widget_action("skip", music_label)
-
-def shuffle_music():
-    handle_music_widget_action("shuffle", music_label)
-
-def open_music_widget():
-    music_widget()  # Open the music widget
-
-def close_music_widget():
-    global music_widget_frame
-    if music_widget_frame is not None:
-        music_widget_frame.place_forget()  # Hide the frame
-        music_widget_frame = None  # Reset the global variable
-
-# Register events with the event manager
-event_manager.register_event("music_play", play_music)
-event_manager.register_event("music_pause", pause_music)
-event_manager.register_event("music_skip", skip_music)
-event_manager.register_event("music_shuffle", shuffle_music)
-event_manager.register_event("open_music_widget", open_music_widget)
-event_manager.register_event("close_music_widget", close_music_widget)
+    def deactivate_smart_home():
+        global smarthome
+        if smarthome:
+            smarthome.close_widget()
+            smarthome = None  # Set to None to indicate it's closed
+        # find a way to destroy/hide the smarthome widget.
 
 
-def activate_music():
-    global music_player
-    music_player = MusicPlayer(root)  # Create an instance of the MusicPlayer class
+    # Register music-related events
+    def play_music():
+        handle_music_widget_action("play", music_label)
 
-event_manager.register_event("smart_home_activate", activate_smart_home)
-event_manager.register_event("smart_home_deactivate", deactivate_smart_home)
+    def pause_music():
+        handle_music_widget_action("pause", music_label)
 
-# Initialize the conversation manager with the smart home activation callback
-conversation_manager = ConversationManager()
+    def skip_music():
+        handle_music_widget_action("skip", music_label)
 
-# Function to start the conversation manager in the background
-async def start_conversation():
-    await conversation_manager.main()
+    def shuffle_music():
+        handle_music_widget_action("shuffle", music_label)
 
-# Function to integrate asyncio with the tkinter main loop
-def run_asyncio_loop():
-    loop = asyncio.get_event_loop()
-    loop.create_task(start_conversation())  # Run the conversation manager as a background task
+    def open_music_widget():
+        music_widget()  # Open the music widget
 
-    # Periodically run the asyncio event loop while keeping the GUI responsive
-    def poll():
-        loop.stop()  # Stop the loop if it's already running
-        loop.run_forever()  # Run the asyncio loop
-        root.after(100, poll)  # Schedule the next poll
+    def close_music_widget():
+        global music_widget_frame
+        if music_widget_frame is not None:
+            music_widget_frame.place_forget()  # Hide the frame
+            music_widget_frame = None  # Reset the global variable
 
-    root.after(100, poll)  # Start polling
+    # Register events with the event manager
+    event_manager.register_event("music_play", play_music)
+    event_manager.register_event("music_pause", pause_music)
+    event_manager.register_event("music_skip", skip_music)
+    event_manager.register_event("music_shuffle", shuffle_music)
+    event_manager.register_event("open_music_widget", open_music_widget)
+    event_manager.register_event("close_music_widget", close_music_widget)
 
+
+    def activate_music():
+        global music_player
+        music_player = MusicPlayer(root)  # Create an instance of the MusicPlayer class
+
+    event_manager.register_event("smart_home_activate", activate_smart_home)
+    event_manager.register_event("smart_home_deactivate", deactivate_smart_home)
+
+    # Initialize the conversation manager with the smart home activation callback
+    conversation_manager = ConversationManager()
+
+    # Function to start the conversation manager in the background
+    async def start_conversation():
+        await conversation_manager.main()
+
+    # Function to integrate asyncio with the tkinter main loop
+    def run_asyncio_loop():
+        loop = asyncio.get_event_loop()
+        loop.create_task(start_conversation())  # Run the conversation manager as a background task
+
+        # Periodically run the asyncio event loop while keeping the GUI responsive
+        def poll():
+            loop.stop()  # Stop the loop if it's already running
+            loop.run_forever()  # Run the asyncio loop
+            root.after(100, poll)  # Schedule the next poll
+
+        root.after(100, poll)  # Start polling
+# Function to show all widgets
 # Initialize the main window
 ctk.set_appearance_mode("dark")  # Optional: Dark mode
 ctk.set_default_color_theme("blue")  # Optional: Default theme
@@ -159,7 +163,7 @@ size = {
 Small = True  # Flag to determine if small mode is enabled
 
 if Small:
-    size = {key: math.floor(value / 2) for key, value in size.items()}  # Halve the values for small mode
+    size = {key: math.floor(value / 2.5) for key, value in size.items()}  # Halve the values for small mode
 
 root = ctk.CTk()
 # uncomment the line below this to get the title bar back
@@ -171,7 +175,8 @@ root.geometry(f"{size['screen_width']}x{size['screen_height']}")
 root.configure(fg_color="#000000")
 
 # Start the asyncio loop alongside the GUI
-run_asyncio_loop()
+if not Developing:
+    run_asyncio_loop()
 
 # variables for Maria's code
 news = str(news_list)
@@ -208,36 +213,36 @@ Quote_write = ctk.CTkLabel(root, text="", font=("Aptos (Body)", size["font_size"
 Quote_write.place(x=size["screen_width"]/2, y=size["screen_height"]/2, anchor="center")
 
 # Inactivity functions
-def reset_inactivity_timer(event=None):
-    global last_activity_time
-    last_activity_time = time.time()
-    if Quote_write.cget("text") != "":
-        Quote_write.configure(text="")
-        show_widgets()
-        update_time()
+# def reset_inactivity_timer(event=None):
+#     global last_activity_time
+#     last_activity_time = time.time()
+#     if Quote_write.cget("text") != "":
+#         Quote_write.configure(text="")
+#         # show_widgets()
+#         update_time()
 
-root.bind("<Motion>", reset_inactivity_timer)
-root.bind("<KeyPress>", reset_inactivity_timer)
+# root.bind("<Motion>", reset_inactivity_timer)
+# root.bind("<KeyPress>", reset_inactivity_timer)
 
 def hide_all_widgets():
     for widget in root.winfo_children():
         if widget != Quote_write:
             widget.place_forget()
 
-def check_inactivity():
-    global last_activity_time
-    if time.time() - last_activity_time > inactivity_timeout:
-        hide_all_widgets()
-        Quote_write.configure(text=str(quote))
-        root.after(turn_off_timeout * 1000, root.quit)
-    root.after(1000, check_inactivity)
+# def check_inactivity():
+#     global last_activity_time
+#     if time.time() - last_activity_time > inactivity_timeout:
+#         hide_all_widgets()
+#         Quote_write.configure(text=str(quote))
+#         root.after(turn_off_timeout * 1000, root.quit)
+#     root.after(1000, check_inactivity)
 
-check_inactivity()
+# check_inactivity()
 
 
 # Idle screen
 def Idle_screen():
-    hide_all_widgets()  # Hide all widgets at startup
+    # hide_all_widgets()  # Hide all widgets at startup
     Quote_write.configure(text=str(quote))
     root.after(5000, show_smile)  # Show smile animation after 5 seconds
 
@@ -281,6 +286,7 @@ def move_clock_up(y):
     updating = False  # Stop updating during movement to prevent flickering
     if y > size["clock_end_y"]:
         clock.place(y=y-1)
+        clock.place(x=size["screen_width"]/2)  # Center the clock
         root.after(5, move_clock_up, y-1)
     else:
         updating = True  # Resume updates after movement
@@ -433,10 +439,10 @@ def hide_todo_list(event):
     if todo_frame.winfo_ismapped():  # Only hide if it is currently visible
         todo_frame.place_forget()
 
-# for i in range(3):
-#     root.grid_columnconfigure(i, weight=1)
-# for i in range(3):
-#     root.grid_rowconfigure(i, weight=1)
+for i in range(3):
+    root.grid_columnconfigure(i, weight=1)
+for i in range(3):
+    root.grid_rowconfigure(i, weight=1)
     
 def exit_news():
     news_frame.grid_forget()
@@ -504,10 +510,7 @@ riseLabel = ctk.CTkLabel(weather_frame, text = sunrisetime, font = ("Times New R
 setLabel = ctk.CTkLabel(weather_frame, text = sunsettime, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
 
 # Load animated GIFs with resized dimensions
-calendar_gif = AnimatedGIF("images/calendar.gif", size=(80, 80))
-todo_gif = AnimatedGIF("images/todolist2.gif", size=(80, 80))
-settings_gif = AnimatedGIF("images/settings.gif", size=(80, 80))
-smart_home_gif = AnimatedGIF("images/Smarthome.gif", size=(80, 80))
+
 
 # Load static PNG with resized dimensions
 music_icon = ctk.CTkImage(dark_image=Image.open("images/icons96.png"), size=(80, 80))
@@ -533,15 +536,18 @@ for widget in widgets:
         root, text=widget["text"], font=("Arial", size["label_font_size"]), text_color="white"
     )
 
+calendar_gif = AnimatedGIF("images/calendar.gif", size=(80, 80))
+todo_gif = AnimatedGIF("images/todolist1.gif", size=(80, 80))
+settings_gif = AnimatedGIF("images/settings.gif", size=(80, 80))
+
 # Create widgets once
 calendar_widget = ctk.CTkLabel(root, text=calendar.month_name[time.localtime().tm_mon], font=("Arial", size["label_font_size"]))
 update_gif(calendar_widget, calendar_gif)
 weather_widget = ctk.CTkLabel(root, text=f"{temp} Degrees Celsius\n{clouds}% Cloudy", font=("Arial", size["label_font_size"]), fg_color=weather_color, text_color="Black")
 todo_widget = ctk.CTkLabel(root, text="", font=("Arial", size["label_font_size"]), text_color="white")
 update_gif(todo_widget, todo_gif)
-music_widget_button = ctk.CTkButton(root, text="", image=music_icon, font=("Arial", size["label_font_size"]), command=lambda: music_widget())
-smart_home_button = ctk.CTkButton(root, text="", image=smart_home_gif.frames[0], font=("Arial", size["label_font_size"]), command=lambda: create_smart_home_widget())
-update_gif(smart_home_button, smart_home_gif)  # Animate the GIF
+music_widget_button = ctk.CTkButton(root, text="", image=music_icon, font=("Arial", size["label_font_size"]), command=lambda: news_screen())
+smart_home_button = ctk.CTkButton(root, text="Say: 'Smart Home'", font=("Arial", size["label_font_size"]), command=lambda: create_smart_home_widget())
 settings_widget = ctk.CTkLabel(root, text="", font=("Arial", size["label_font_size"]))
 update_gif(settings_widget, settings_gif)
 ask_mirror_button = ctk.CTkButton(root, text="Say 'Hey Vivi!'", font=("Arial", size["label_font_size"]), command=ask_mirror)
@@ -571,7 +577,7 @@ def show_widgets():
         smart_home_button.place(x=size["smart_home_x"], y=size["smart_home_y"])
         settings_widget.place(x=size["settings_x"], y=size["settings_content_y"])
         ask_mirror_button.place(x=size["ask_mirror_x"], y=size["ask_mirror_y"])
-        vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=75, height=75, frame_delay=50, x=size["vivi_x"], y=size["vivi_y"])
+        vivi_animation = GifAnimation(root, "images/ViviAnimation.gif", width=75, height=75, frame_delay=50, x=size["vivi_x"], y=size["vivi_y"])
 
         shown = True
 

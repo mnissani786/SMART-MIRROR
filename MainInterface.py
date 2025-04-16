@@ -9,6 +9,7 @@ from goveeTest import *
 import asyncio
 from VoiceAgent import ConversationManager
 from Vivi import ViviAnimation
+from Smile import SmileAnimation
 from event_manager import event_manager
 from smarthome import SmartHome
 import musicTest
@@ -136,31 +137,13 @@ def place_sym():
 # Function to show "SMILE" first
 def show_smile():
     Quote_write.configure(text="")  # Removes quote from screen (need to improve technique for this)
-    # play_video()
-    root.after(100, start_clock)  # After 10 seconds, show date and time
-
-# Function to play video before showing widgets
-def play_video():
-    video_label = ctk.CTkLabel(root, text="")  # Create a label to hold video frames
-    video_label.place(x=0.5, y=0.5, relwidth=1, relheight=1)  # Make video cover full screen
-
-    # Load the video file (use a path to your video file)
-    video_path = "Neon Smile.mp4"  # Replace this with the path to your video file
-    video = imageio.get_reader(video_path)
-
-    def stream_video():
-        for frame in video:
-            frame_image = Image.fromarray(frame)  # Convert frame to image
-            frame_image = frame_image.resize((size["screen_width"], size["screen_height"]), Image.Resampling.LANCZOS)  # Resize to fit screen
-            frame_photo = ImageTk.PhotoImage(frame_image)
-            video_label.configure(image=frame_photo)
-            video_label.image = frame_photo
-            root.update()  # Update the root window
-            time.sleep(0.005)  # Control playback speed (~30 fps)
-
-        video_label.destroy()  # Remove video label after playback
-
-    root.after(0, stream_video)
+    smile_animation = SmileAnimation(root, "smile.gif", width=size["screen_width"], height=size["screen_height"], frame_delay=200, x=0, y=0)
+    
+    def remove_smile_animation():
+        smile_animation.label.destroy()
+    
+    root.after(3000, remove_smile_animation)  # Remove smile animation after 3 seconds
+    root.after(3000, start_clock)  # After 10 seconds, show date and time
 
 # Function to start showing date and time
 def start_clock():
@@ -196,10 +179,10 @@ def move_clock_up(y):
 
 # Function to handle "Ask Mirror" button click
 def ask_mirror():
-    #ask_mirror_button.configure(text="Listening...")  # Change button text
-    #ask_mirror_button.update_idletasks()  # Update the button text immediately
-    #get_audio()
-    # ask_mirror_button.configure(text="Ask Mirror")  # Restore button text
+    ask_mirror_button.configure(text="Listening...")  # Change button text
+    ask_mirror_button.update_idletasks()  # Update the button text immediately
+    get_audio()
+    ask_mirror_button.configure(text="Ask Mirror")  # Restore button text
     print("Ask Mirror Clicked!")
 
 def create_smart_home_widget():
@@ -293,7 +276,7 @@ def show_widgets():
         smart_home_button.place(x=size["smart_home_x"], y=size["smart_home_y"])
         settings_widget.place(x=size["settings_x"], y=size["settings_content_y"])
         ask_mirror_button.place(x=size["ask_mirror_x"], y=size["ask_mirror_y"])
-        vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=75, height=75, frame_delay=50, x=450, y=850)
+        vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=75, height=75, frame_delay=50, x=200, y=200)
 
         shown = True
 

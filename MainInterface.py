@@ -136,8 +136,8 @@ def place_sym():
 # Function to show "SMILE" first
 def show_smile():
     Quote_write.configure(text="")  # Removes quote from screen (need to improve technique for this)
-    play_video()
-    root.after(16000, start_clock)  # After 10 seconds, show date and time
+    # play_video()
+    root.after(100, start_clock)  # After 10 seconds, show date and time
 
 # Function to play video before showing widgets
 def play_video():
@@ -205,6 +205,9 @@ def ask_mirror():
 def create_smart_home_widget():
     smarthome = SmartHome(root)  # Create an instance of the SmartHome class
 
+def close_widget(frame):
+    frame.place_forget()
+
 # Creates a new music player that runs in the background
 newPlayer = musicTest.MusicPlayer()
 
@@ -263,7 +266,7 @@ weather_widget = ctk.CTkLabel(root, text=f"{temp} Degrees Celsius\n{clouds}% Clo
 todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", size["label_font_size"]), text_color="white")
 # todo_widget.pack(pady=10, padx=20, anchor="w")  # Left-align with padding
 todo_widget.bind("<Button-1>", lambda e: toggle_todo_list())  # Make the To-Do list clickable
-music_widget = ctk.CTkLabel(root, text="Playing: Song XYZ", font=("Arial", size["label_font_size"]))
+music_widget_button = ctk.CTkButton(root, text="Playing: Song XYZ", font=("Arial", size["label_font_size"]), command=lambda: music_widget())
 smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", size["label_font_size"]), command=lambda: create_smart_home_widget())
 settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", size["label_font_size"]))
 ask_mirror_button = ctk.CTkButton(root, text="Say 'Hey Vivi!'", font=("Arial", size["label_font_size"]), command=ask_mirror)
@@ -286,7 +289,7 @@ def show_widgets():
         calendar_widget.place(x=size["calendar_x"], y=size["calendar_content_y"])
         weather_widget.place(x=size["weather_x"], y=size["weather_content_y"])
         todo_widget.place(x=size["todo_x"], y=size["todo_content_y"])
-        music_widget.place(x=size["music_x"], y=size["music_content_y"])
+        music_widget_button.place(x=size["music_x"], y=size["music_content_y"])
         smart_home_button.place(x=size["smart_home_x"], y=size["smart_home_y"])
         settings_widget.place(x=size["settings_x"], y=size["settings_content_y"])
         ask_mirror_button.place(x=size["ask_mirror_x"], y=size["ask_mirror_y"])

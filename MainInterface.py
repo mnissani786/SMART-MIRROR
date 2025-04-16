@@ -123,6 +123,8 @@ size = {
     "label_font_size": 48,
     "ask_mirror_x": 540,
     "ask_mirror_y": 1728,
+    "vivi_x": 800,
+    "vivi_y": 1728
 }
 
 Small = True  # Flag to determine if small mode is enabled
@@ -410,7 +412,7 @@ def show_widgets():
         smart_home_button.place(x=size["smart_home_x"], y=size["smart_home_y"])
         settings_widget.place(x=size["settings_x"], y=size["settings_content_y"])
         ask_mirror_button.place(x=size["ask_mirror_x"], y=size["ask_mirror_y"])
-        vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=75, height=75, frame_delay=50, x=200, y=200)
+        vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=75, height=75, frame_delay=50, x=size["vivi_x"], y=size["vivi_y"])
 
         shown = True
 

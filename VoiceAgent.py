@@ -258,7 +258,7 @@ class ConversationManager:
                         print("Turning the light purple...")
                         tts.speak("Govee Light Purplse.")
                         changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(160, 0, 255)))
-                    if "close" in self.transcription_response.lower():
+                    if "exit" in self.transcription_response.lower():
                         print("Closing the smart home widget...")
                         tts.speak("Closing smart home.")
                         event_manager.trigger_event("smart_home_deactivate")  # Trigger the event

@@ -54,6 +54,7 @@ class MusicPlayer:
         self.player = vlc.MediaPlayer(self.file_path)
         time.sleep(1)
         self.player.play()
+        self.player.audio_set_volume(60)  # Set volume to 100%
         return self.player    
 
     def skip(self, event):

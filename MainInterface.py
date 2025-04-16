@@ -507,10 +507,10 @@ weather_frame = ctk.CTkFrame(master=root, width=500, height= 700, fg_color= 'bla
 sample_text = ctk.CTkLabel(root,text = "this is the main screen",font = ("Aptos (Body)", 20), text_color = "white", wraplength= 425)
 news_pic = ctk.CTkImage(dark_image= Image.open(news_pic), size= (80,80))
 news_open = ctk.CTkButton(root, image = news_pic, text="", command=news_screen, fg_color= "transparent", width= 80, height= 80)
-news_close = ctk.CTkButton(news_frame, text="Close News", command=news_exit)
+news_close = ctk.CTkButton(news_frame, text="Exit News", command=news_exit)
 weather_icon = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (80,80))
 weather_open = ctk.CTkButton(root, image = weather_icon, text = "", command=weather_screen, width= 80, height= 80, fg_color= "transparent")
-weather_close = ctk.CTkButton(weather_frame, text="Exit", command=weather_exit)
+weather_close = ctk.CTkButton(weather_frame, text="Exit Weather", command=weather_exit)
 
 new_display = ctk.CTkLabel(news_frame,text = news,font = ("Aptos (Body)", 20), text_color = "white", wraplength= 450, anchor= 'w')
 weather_sym = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (210,210))

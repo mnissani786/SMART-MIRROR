@@ -188,6 +188,7 @@ def ask_mirror():
 
 def create_smart_home_widget():
     smarthome = SmartHome(root)  # Create an instance of the SmartHome class
+    selection_box_commands(smarthome.frame, 0, 1)
 
 def close_widget(frame):
     frame.place_forget()

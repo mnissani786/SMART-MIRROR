@@ -17,7 +17,7 @@ import musicTest
 from musicTest import MusicPlayer 
 
 #made a flag to help me develop
-Developing = False
+Developing = True
 
 # Utility Classes
 class AnimatedGIF:
@@ -224,7 +224,7 @@ clock.place(x=size["screen_width"]/2, y=size["screen_height"]/2, anchor="center"
 updating = False  # Flag to control time updates
 
 # Place quote on screen
-Quote_write = ctk.CTkLabel(root, text="", font=("Aptos (Body)", size["font_size"]), text_color="white", fg_color="#000000", wraplength=size["font_wrapLength"])
+Quote_write = ctk.CTkLabel(root, text="hi", font=("Aptos (Body)", size["font_size"]), text_color="white", fg_color="#000000", wraplength=size["font_wrapLength"])
 Quote_write.place(x=size["screen_width"]/2, y=size["screen_height"]/2, anchor="center")
 
 # Inactivity functions

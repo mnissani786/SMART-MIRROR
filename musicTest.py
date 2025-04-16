@@ -10,7 +10,7 @@ import vlc
 
 class MusicPlayer:
     def __init__(self):
-        self.directory = "./Sample_Music"  # Can change if necessary
+        self.directory = ".\Sample Music"  # Can change if necessary
         self.files = [f for f in os.listdir(self.directory) if os.path.isfile(os.path.join(self.directory, f))] # Finds the files
         self.currentFile = None
         self.player = None
@@ -41,14 +41,13 @@ class MusicPlayer:
                     return nextFile
                 time.sleep(1)        
                 
-    # toggles pause
-    def togglePause(self):
-        self.player.pause() 
 
-    # Retrieves song to play it
+    def togglePause(self):
+        self.player.pause() #toggles 
+
     def play(self):
         self.currentFile = self.fileSelect()
-        # print(f"Current Song: {self.currentFile}")
+        print(f"Current Song: {self.currentFile}")
         
         # Get the file path and create the VLC player
         self.file_path = os.path.join(self.directory, self.currentFile)
@@ -57,7 +56,6 @@ class MusicPlayer:
         self.player.play()
         return self.player    
 
-    # Plays the next song
     def skip(self, event):
         if self.files:
             self.player = self.play()
@@ -80,7 +78,7 @@ class MusicPlayer:
             print("No files found in directory.")
 
     # for debugging, will transfer to UI design
-    def main(self, cmd):        
+    def main(self, cmd):   
         if cmd == "pause":
             self.togglePause()
         elif cmd == "skip":
@@ -89,9 +87,12 @@ class MusicPlayer:
             self.event.clear()  # Resets event to false
             self.currentSong = threading.Thread(target=self.skip, args=(self.event,))  # Creates the thread to play the music
             self.currentSong.start()
+            
         elif cmd == "shuffle":
             self.shuffle = self.toggleShuffle()
             print("Shuffle set to: " +str(self.shuffle))
+
+        return self.currentFile
             
 
 # if __name__ == "__main__":

@@ -249,9 +249,6 @@ class ConversationManager:
                     tts.speak("Smart home activated.")
                     event_manager.trigger_event("smart_home_activate")  # Trigger the event
                     On_SmartHome = True
-                llm_response = self.llm.process(self.transcription_response)
-
-                print(f"llm response: {llm_response}")
 
                 # Reset transcription_response for the next loop iteration
                 self.transcription_response = ""

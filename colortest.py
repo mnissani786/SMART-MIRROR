@@ -1,6 +1,8 @@
 import time
 from rpi_ws281x import *
 import argparse
+#save this line of code to make this work
+# sudo setcap 'cap_sys_rawio,cap_dac_override,cap_ipc_lock+ep' /usr/bin/python3.11
 
 class ColorWorker:
     def __init__(self):

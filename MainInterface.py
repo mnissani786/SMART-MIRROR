@@ -7,46 +7,47 @@ from PIL import Image, ImageTk
 import imageio  # For video playback
 from goveeTest import *
 import asyncio
-from VoiceAgent import ConversationManager
+#from VoiceAgent import ConversationManager
 from Vivi import ViviAnimation
+from Smile import SmileAnimation
 from event_manager import event_manager
 from smarthome import SmartHome
 import musicTest
 
 # Function to activate the smart home
-def activate_smart_home():
-    global smarthome
-    smarthome = SmartHome(root)  # Create an instance of the SmartHome class
+# def activate_smart_home():
+#     global smarthome
+#     smarthome = SmartHome(root)  # Create an instance of the SmartHome class
 
-def deactivate_smart_home():
-    global smarthome
-    if smarthome:
-        smarthome.close_widget()
-        smarthome = None  # Set to None to indicate it's closed
-    # find a way to destroy/hide the smarthome widget.
+# def deactivate_smart_home():
+#     global smarthome
+#     if smarthome:
+#         smarthome.close_widget()
+#         smarthome = None  # Set to None to indicate it's closed
+#     # find a way to destroy/hide the smarthome widget.
 
-event_manager.register_event("smart_home_activate", activate_smart_home)
-event_manager.register_event("smart_home_deactivate", deactivate_smart_home)
+# event_manager.register_event("smart_home_activate", activate_smart_home)
+# event_manager.register_event("smart_home_deactivate", deactivate_smart_home)
 
 # Initialize the conversation manager with the smart home activation callback
-conversation_manager = ConversationManager()
+# conversation_manager = ConversationManager()
 
-# Function to start the conversation manager in the background
-async def start_conversation():
-    await conversation_manager.main()
+# # Function to start the conversation manager in the background
+# async def start_conversation():
+#     await conversation_manager.main()
 
-# Function to integrate asyncio with the tkinter main loop
-def run_asyncio_loop():
-    loop = asyncio.get_event_loop()
-    loop.create_task(start_conversation())  # Run the conversation manager as a background task
+# # Function to integrate asyncio with the tkinter main loop
+# def run_asyncio_loop():
+#     loop = asyncio.get_event_loop()
+#     loop.create_task(start_conversation())  # Run the conversation manager as a background task
 
-    # Periodically run the asyncio event loop while keeping the GUI responsive
-    def poll():
-        loop.stop()  # Stop the loop if it's already running
-        loop.run_forever()  # Run the asyncio loop
-        root.after(100, poll)  # Schedule the next poll
+#     # Periodically run the asyncio event loop while keeping the GUI responsive
+#     def poll():
+#         loop.stop()  # Stop the loop if it's already running
+#         loop.run_forever()  # Run the asyncio loop
+#         root.after(100, poll)  # Schedule the next poll
 
-    root.after(100, poll)  # Start polling
+#     root.after(100, poll)  # Start polling
 
 # Initialize the main window
 ctk.set_appearance_mode("dark")  # Optional: Dark mode
@@ -89,7 +90,7 @@ size = {
 
 Small = True  # Flag to determine if small mode is enabled
 if Small:
-    size = {key: math.floor(value / 2) for key, value in size.items()}  # Halve the values for small mode
+    size = {key: math.floor(value / 3) for key, value in size.items()}  # Halve the values for small mode
 
 root = ctk.CTk()
 # uncomment the line below this to get the title bar back
@@ -101,7 +102,7 @@ root.geometry(f"{size['screen_width']}x{size['screen_height']}")
 root.configure(fg_color="#000000")
 
 # Start the asyncio loop alongside the GUI
-run_asyncio_loop()
+# run_asyncio_loop()
 
 # Sample list of tasks for the To-Do widget
 tasks = [
@@ -136,31 +137,13 @@ def place_sym():
 # Function to show "SMILE" first
 def show_smile():
     Quote_write.configure(text="")  # Removes quote from screen (need to improve technique for this)
-    # play_video()
-    root.after(100, start_clock)  # After 10 seconds, show date and time
-
-# Function to play video before showing widgets
-def play_video():
-    video_label = ctk.CTkLabel(root, text="")  # Create a label to hold video frames
-    video_label.place(x=0.5, y=0.5, relwidth=1, relheight=1)  # Make video cover full screen
-
-    # Load the video file (use a path to your video file)
-    video_path = "Neon Smile.mp4"  # Replace this with the path to your video file
-    video = imageio.get_reader(video_path)
-
-    def stream_video():
-        for frame in video:
-            frame_image = Image.fromarray(frame)  # Convert frame to image
-            frame_image = frame_image.resize((size["screen_width"], size["screen_height"]), Image.Resampling.LANCZOS)  # Resize to fit screen
-            frame_photo = ImageTk.PhotoImage(frame_image)
-            video_label.configure(image=frame_photo)
-            video_label.image = frame_photo
-            root.update()  # Update the root window
-            time.sleep(0.005)  # Control playback speed (~30 fps)
-
-        video_label.destroy()  # Remove video label after playback
-
-    root.after(0, stream_video)
+    smile_animation = SmileAnimation(root, "smile.gif", width=size["screen_width"], height=size["screen_height"], frame_delay=200, x=0, y=0)
+    
+    def remove_smile_animation():
+        smile_animation.label.destroy()
+    
+    root.after(3000, remove_smile_animation)  # Remove smile animation after 3 seconds
+    root.after(3000, start_clock)  # After 10 seconds, show date and time
 
 # Function to start showing date and time
 def start_clock():
@@ -293,7 +276,7 @@ def show_widgets():
         smart_home_button.place(x=size["smart_home_x"], y=size["smart_home_y"])
         settings_widget.place(x=size["settings_x"], y=size["settings_content_y"])
         ask_mirror_button.place(x=size["ask_mirror_x"], y=size["ask_mirror_y"])
-        vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=75, height=75, frame_delay=50, x=450, y=850)
+        vivi_animation = ViviAnimation(root, "ViviAnimation.gif", width=75, height=75, frame_delay=50, x=200, y=200)
 
         shown = True
 

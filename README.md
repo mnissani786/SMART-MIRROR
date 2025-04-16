@@ -1,4 +1,4 @@
-# Welcome to Reflective Assistant!
+# Welcome to Reflective Assistant!🪞
 
 By Kaeden Bryer, Christina Carvalho, Maria Echeverri Solis and Malik Issani
 For CSI2999 at Oakland University

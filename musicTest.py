@@ -10,7 +10,7 @@ import vlc
 
 class MusicPlayer:
     def __init__(self):
-        self.directory = ".\Sample Music"  # Can change if necessary
+        self.directory = "./Sample_Music"  # Can change if necessary
         self.files = [f for f in os.listdir(self.directory) if os.path.isfile(os.path.join(self.directory, f))] # Finds the files
         self.currentFile = None
         self.player = None

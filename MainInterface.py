@@ -7,7 +7,7 @@ from PIL import Image, ImageTk
 import imageio  # For video playback
 from goveeTest import *
 import asyncio
-#from VoiceAgent import ConversationManager
+from VoiceAgent import ConversationManager
 from Vivi import ViviAnimation
 from Smile import SmileAnimation
 from event_manager import event_manager
@@ -15,39 +15,39 @@ from smarthome import SmartHome
 import musicTest
 
 # Function to activate the smart home
-# def activate_smart_home():
-#     global smarthome
-#     smarthome = SmartHome(root)  # Create an instance of the SmartHome class
+def activate_smart_home():
+    global smarthome
+    smarthome = SmartHome(root)  # Create an instance of the SmartHome class
 
-# def deactivate_smart_home():
-#     global smarthome
-#     if smarthome:
-#         smarthome.close_widget()
-#         smarthome = None  # Set to None to indicate it's closed
-#     # find a way to destroy/hide the smarthome widget.
+def deactivate_smart_home():
+    global smarthome
+    if smarthome:
+        smarthome.close_widget()
+        smarthome = None  # Set to None to indicate it's closed
+    # find a way to destroy/hide the smarthome widget.
 
-# event_manager.register_event("smart_home_activate", activate_smart_home)
-# event_manager.register_event("smart_home_deactivate", deactivate_smart_home)
+event_manager.register_event("smart_home_activate", activate_smart_home)
+event_manager.register_event("smart_home_deactivate", deactivate_smart_home)
 
 # Initialize the conversation manager with the smart home activation callback
-# conversation_manager = ConversationManager()
+conversation_manager = ConversationManager()
 
-# # Function to start the conversation manager in the background
-# async def start_conversation():
-#     await conversation_manager.main()
+# Function to start the conversation manager in the background
+async def start_conversation():
+    await conversation_manager.main()
 
-# # Function to integrate asyncio with the tkinter main loop
-# def run_asyncio_loop():
-#     loop = asyncio.get_event_loop()
-#     loop.create_task(start_conversation())  # Run the conversation manager as a background task
+# Function to integrate asyncio with the tkinter main loop
+def run_asyncio_loop():
+    loop = asyncio.get_event_loop()
+    loop.create_task(start_conversation())  # Run the conversation manager as a background task
 
-#     # Periodically run the asyncio event loop while keeping the GUI responsive
-#     def poll():
-#         loop.stop()  # Stop the loop if it's already running
-#         loop.run_forever()  # Run the asyncio loop
-#         root.after(100, poll)  # Schedule the next poll
+    # Periodically run the asyncio event loop while keeping the GUI responsive
+    def poll():
+        loop.stop()  # Stop the loop if it's already running
+        loop.run_forever()  # Run the asyncio loop
+        root.after(100, poll)  # Schedule the next poll
 
-#     root.after(100, poll)  # Start polling
+    root.after(100, poll)  # Start polling
 
 # Initialize the main window
 ctk.set_appearance_mode("dark")  # Optional: Dark mode
@@ -90,7 +90,7 @@ size = {
 
 Small = True  # Flag to determine if small mode is enabled
 if Small:
-    size = {key: math.floor(value / 3) for key, value in size.items()}  # Halve the values for small mode
+    size = {key: math.floor(value / 2) for key, value in size.items()}  # Halve the values for small mode
 
 root = ctk.CTk()
 # uncomment the line below this to get the title bar back
@@ -102,7 +102,7 @@ root.geometry(f"{size['screen_width']}x{size['screen_height']}")
 root.configure(fg_color="#000000")
 
 # Start the asyncio loop alongside the GUI
-# run_asyncio_loop()
+run_asyncio_loop()
 
 # Sample list of tasks for the To-Do widget
 tasks = [
@@ -179,10 +179,10 @@ def move_clock_up(y):
 
 # Function to handle "Ask Mirror" button click
 def ask_mirror():
-    #ask_mirror_button.configure(text="Listening...")  # Change button text
-    #ask_mirror_button.update_idletasks()  # Update the button text immediately
-    #get_audio()
-    # ask_mirror_button.configure(text="Ask Mirror")  # Restore button text
+    ask_mirror_button.configure(text="Listening...")  # Change button text
+    ask_mirror_button.update_idletasks()  # Update the button text immediately
+    get_audio()
+    ask_mirror_button.configure(text="Ask Mirror")  # Restore button text
     print("Ask Mirror Clicked!")
 
 def create_smart_home_widget():

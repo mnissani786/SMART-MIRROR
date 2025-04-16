@@ -182,7 +182,7 @@ def move_clock_up(y):
 def ask_mirror():
     ask_mirror_button.configure(text="Listening...")  # Change button text
     ask_mirror_button.update_idletasks()  # Update the button text immediately
-    get_audio()
+    # get_audio()
     ask_mirror_button.configure(text="Ask Mirror")  # Restore button text
     print("Ask Mirror Clicked!")
 

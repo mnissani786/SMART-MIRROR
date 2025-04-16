@@ -208,6 +208,23 @@ class ConversationManager:
             while True:
                 await get_transcript(handle_full_sentence)
 
+                if "play music" in self.transcription_response.lower():
+                    print("Playing music...")
+                    tts.speak("Playing music.")
+                    event_manager.trigger_event("music_play")
+                elif "pause music" in self.transcription_response.lower():
+                    print("Pausing music...")
+                    tts.speak("Pausing music.")
+                    event_manager.trigger_event("music_pause")
+                elif "skip music" in self.transcription_response.lower():
+                    print("Skipping music...")
+                    tts.speak("Skipping music.")
+                    event_manager.trigger_event("music_skip")
+                elif "shuffle music" in self.transcription_response.lower():
+                    print("Shuffling music...")
+                    tts.speak("Shuffling music.")
+                    event_manager.trigger_event("music_shuffle")
+            
                 if On_SmartHome:
                     if "red" in self.transcription_response.lower():
                         print("Turning the light red...")

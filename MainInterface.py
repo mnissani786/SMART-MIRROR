@@ -13,6 +13,7 @@ from Smile import SmileAnimation
 from event_manager import event_manager
 from smarthome import SmartHome
 import musicTest
+from musicTest import MusicPlayer 
 
 # Function to activate the smart home
 def activate_smart_home():
@@ -25,6 +26,31 @@ def deactivate_smart_home():
         smarthome.close_widget()
         smarthome = None  # Set to None to indicate it's closed
     # find a way to destroy/hide the smarthome widget.
+
+
+# Register music-related events
+def play_music():
+    handle_music_widget_action("play", music_label)
+
+def pause_music():
+    handle_music_widget_action("pause", music_label)
+
+def skip_music():
+    handle_music_widget_action("skip", music_label)
+
+def shuffle_music():
+    handle_music_widget_action("shuffle", music_label)
+
+# Register events with the event manager
+event_manager.register_event("music_play", play_music)
+event_manager.register_event("music_pause", pause_music)
+event_manager.register_event("music_skip", skip_music)
+event_manager.register_event("music_shuffle", shuffle_music)
+
+
+def activate_music():
+    global music_player
+    music_player = MusicPlayer(root)  # Create an instance of the MusicPlayer class
 
 event_manager.register_event("smart_home_activate", activate_smart_home)
 event_manager.register_event("smart_home_deactivate", deactivate_smart_home)
@@ -104,6 +130,10 @@ root.configure(fg_color="#000000")
 
 # Start the asyncio loop alongside the GUI
 run_asyncio_loop()
+
+# Create a label to display the current song (used in the music widget)
+music_label = ctk.CTkLabel(root, text="No song playing", font=("Arial", 24), text_color="white", fg_color="black")
+
 
 # Sample list of tasks for the To-Do widget
 tasks = [

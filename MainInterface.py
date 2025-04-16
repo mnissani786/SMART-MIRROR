@@ -1,7 +1,8 @@
 import customtkinter as ctk
 import time
 import calendar
-from API_Data import temp, weather_color, clouds, quote, weather_symbol
+from API_Data import *
+from itertools import count
 import math
 from PIL import Image, ImageTk
 import imageio  # For video playback
@@ -14,6 +15,34 @@ from event_manager import event_manager
 from smarthome import SmartHome
 import musicTest
 from musicTest import MusicPlayer 
+
+# Utility Classes
+class AnimatedGIF:
+    def __init__(self, gif_path, size):
+        self.gif = Image.open(gif_path)
+        self.frames = []
+        self.size = size
+
+        # Extract all frames from the GIF
+        try:
+            for frame in count(0):
+                self.gif.seek(frame)
+                frame_image = self.gif.copy().resize(self.size, Image.Resampling.LANCZOS)
+                self.frames.append(ImageTk.PhotoImage(frame_image))
+        except EOFError:
+            pass
+
+        self.current_frame = 0
+
+    def get_next_frame(self):
+        frame = self.frames[self.current_frame]
+        self.current_frame = (self.current_frame + 1) % len(self.frames)
+        return frame
+
+# Constants and Global Variables
+inactivity_timeout = 30  # seconds
+turn_off_timeout = 30  # seconds after inactivity
+last_activity_time = time.time()
 
 # Function to activate the smart home
 def activate_smart_home():
@@ -144,6 +173,17 @@ root.configure(fg_color="#000000")
 # Start the asyncio loop alongside the GUI
 run_asyncio_loop()
 
+# variables for Maria's code
+news = str(news_list)
+curr_temp = str(temp) + "° C"
+cloudy = "Cloud Coverage: " + str(clouds) +"% "
+wind_speed = "Wind Speed: " + str(wind_mph) + "mph"
+humidity = "Humidity:" + str(humid) + "%"
+High = "H: " + str(high_temp) + " || "
+Low = "L: " + str(low_temp)
+sunrisetime = "🌅 Sunrise: " + str(sunrisetime) + " EST"
+sunsettime = "🌇 Sunset: " + str(sunsettime) + " EST"
+
 # Create a label to display the current song (used in the music widget)
 music_label = ctk.CTkLabel(root, text="No song playing", font=("Arial", 24), text_color="white", fg_color="black")
 
@@ -167,10 +207,39 @@ updating = False  # Flag to control time updates
 Quote_write = ctk.CTkLabel(root, text="", font=("Aptos (Body)", size["font_size"]), text_color="white", fg_color="#000000", wraplength=size["font_wrapLength"])
 Quote_write.place(x=size["screen_width"]/2, y=size["screen_height"]/2, anchor="center")
 
-# New Idle screen
+# Inactivity functions
+def reset_inactivity_timer(event=None):
+    global last_activity_time
+    last_activity_time = time.time()
+    if Quote_write.cget("text") != "":
+        Quote_write.configure(text="")
+        show_widgets()
+        update_time()
+
+root.bind("<Motion>", reset_inactivity_timer)
+root.bind("<KeyPress>", reset_inactivity_timer)
+
+def hide_all_widgets():
+    for widget in root.winfo_children():
+        if widget != Quote_write:
+            widget.place_forget()
+
+def check_inactivity():
+    global last_activity_time
+    if time.time() - last_activity_time > inactivity_timeout:
+        hide_all_widgets()
+        Quote_write.configure(text=str(quote))
+        root.after(turn_off_timeout * 1000, root.quit)
+    root.after(1000, check_inactivity)
+
+check_inactivity()
+
+
+# Idle screen
 def Idle_screen():
+    hide_all_widgets()  # Hide all widgets at startup
     Quote_write.configure(text=str(quote))
-    root.after(5000, show_smile)  # After 10 seconds, show SMILE
+    root.after(5000, show_smile)  # Show smile animation after 5 seconds
 
 #symbol for cloudyness
 def place_sym():
@@ -225,13 +294,12 @@ def move_clock_up(y):
 def ask_mirror():
     ask_mirror_button.configure(text="Listening...")  # Change button text
     ask_mirror_button.update_idletasks()  # Update the button text immediately
-    # get_audio()
     ask_mirror_button.configure(text="Ask Mirror")  # Restore button text
     print("Ask Mirror Clicked!")
 
 def create_smart_home_widget():
     smarthome = SmartHome(root)  # Create an instance of the SmartHome class
-    selection_box_commands(smarthome.frame, 0, 1)
+    # selection_box_commands(smarthome.frame, 0, 1)
 
 def close_widget(frame):
     frame.place_forget()
@@ -365,6 +433,91 @@ def hide_todo_list(event):
     if todo_frame.winfo_ismapped():  # Only hide if it is currently visible
         todo_frame.place_forget()
 
+for i in range(3):
+    root.grid_columnconfigure(i, weight=1)
+for i in range(3):
+    root.grid_rowconfigure(i, weight=1)
+    
+def exit_news():
+    news_frame.grid_forget()
+    news_frame.place_forget()
+    global shown
+    shown = False  # Reset the shown flag
+    clock.place(x=250, y=200, anchor="center")  # Restore the clock
+    show_widgets()  # Restore widgets
+
+def weather_exit():
+    weather_frame.grid_forget()
+    weather_frame.place_forget()
+    global shown
+    shown = False  # Reset the shown flag
+    clock.place(x=250, y=200, anchor="center")  # Restore the clock
+    show_widgets()  # Restore widgets
+
+def news_screen():
+    hide_all_widgets()  # Hide all widgets
+    news_frame.place(relx=0.5, y=0, anchor="n")  # Top right
+    news_frame.grid_columnconfigure(0, weight=1)
+    news_frame.grid_rowconfigure(0, weight=1)
+    news_frame.grid_rowconfigure(1, weight=1)
+    new_display.grid(column=0, row=1, padx=20, pady=20, sticky='nw')
+    news_close.grid(column=0, row=0)
+
+def weather_screen():
+    hide_all_widgets()  # Hide all widgets
+    weather_frame.place(relx=0.5, y=0, anchor="n")  # Top center
+    for i in range(2):
+        weather_frame.grid_columnconfigure(i, weight=1)
+    for i in range(8):  # Adjusted to fit sunrise and sunset rows
+        weather_frame.grid_rowconfigure(i, weight=1)
+    Wsym_label.grid(column = 0, row = 1, padx = 3, pady = 3)
+    tempLabel.grid(column = 1, row = 1, padx = 3, pady = 3)
+    cloudLabel.grid(column = 0, row = 3, padx = 20, pady = 20, sticky = 'w', columnspan = 2)
+    windLabel.grid(column = 0, row = 4, padx = 20, pady = 20, sticky = 'w', columnspan = 2)
+    humidLabel.grid(column = 0, row = 5, padx = 20, pady = 20, sticky = 'w', columnspan = 2)
+    Low_HighLabel.grid(column = 1, row = 2, padx = 10, pady = 10, sticky = 'n', columnspan = 2)
+    #LowLabel.grid(column = 0, row = 2, padx = 20, pady = 20, sticky = 'ne')
+    weather_close.grid(column = 0, row = 0, padx = 20, pady = 20, sticky = 'ne')
+    riseLabel.grid(column = 0, row = 6, padx = 20, pady = 20, sticky = 'w', columnspan =2)
+    setLabel.grid(column = 0, row = 7, padx = 20, pady = 20, sticky = 'w', columnspan =2)
+
+news_frame = ctk.CTkScrollableFrame(master=root, width=500, height= 700, fg_color= 'black')
+weather_frame = ctk.CTkFrame(master=root, width=500, height= 700, fg_color= 'black')
+sample_text = ctk.CTkLabel(root,text = "this is the main screen",font = ("Aptos (Body)", 20), text_color = "white", wraplength= 425)
+news_pic = ctk.CTkImage(dark_image= Image.open(news_pic), size= (80,80))
+news_open = ctk.CTkButton(root, image = news_pic, text="", command=news_screen, fg_color= "transparent", width= 80, height= 80)
+news_close = ctk.CTkButton(news_frame, text="Close News", command=exit_news)
+weather_icon = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (80,80))
+weather_open = ctk.CTkButton(root, image = weather_icon, text = "", command=weather_screen, width= 80, height= 80, fg_color= "transparent")
+weather_close = ctk.CTkButton(weather_frame, text="Exit", command=weather_exit)
+
+new_display = ctk.CTkLabel(news_frame,text = news,font = ("Aptos (Body)", 20), text_color = "white", wraplength= 450, anchor= 'w')
+weather_sym = ctk.CTkImage(dark_image= Image.open(weather_symbol), size= (210,210))
+Wsym_label = ctk.CTkLabel(weather_frame, image=weather_sym, text="")
+tempLabel = ctk.CTkLabel(weather_frame, text = curr_temp, font = ("Times New Roman", 30), text_color = "white", fg_color= "black")
+cloudLabel = ctk.CTkLabel(weather_frame, text = cloudy, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
+windLabel = ctk.CTkLabel(weather_frame, text = wind_speed, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
+humidLabel = ctk.CTkLabel(weather_frame, text = humidity, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
+Low_HighLabel = ctk.CTkLabel(weather_frame, text = High + Low, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
+#LowLabel = ctk.CTkLabel(weather_frame, text = Low, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
+riseLabel = ctk.CTkLabel(weather_frame, text = sunrisetime, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
+setLabel = ctk.CTkLabel(weather_frame, text = sunsettime, font = ("Times New Roman", 25), text_color = "white", fg_color= "black")
+
+# Load animated GIFs with resized dimensions
+calendar_gif = AnimatedGIF("images/calendar.gif", size=(80, 80))
+todo_gif = AnimatedGIF("images/todolist2.gif", size=(80, 80))
+settings_gif = AnimatedGIF("images/settings.gif", size=(80, 80))
+smart_home_gif = AnimatedGIF("images/Smarthome.gif", size=(80, 80))
+
+# Load static PNG with resized dimensions
+music_icon = ctk.CTkImage(dark_image=Image.open("images/icons96.png"), size=(80, 80))
+
+def update_gif(label, gif):
+    frame = gif.get_next_frame()
+    label.configure(image=frame)
+    label.image = frame
+    root.after(100, update_gif, label, gif)  # Adjust the delay (100ms) based on the GIF's frame rate
+
 # List of widgets to display. This makes it easy to initialize the labels all at once
 widgets = [
     {"text": "Calendar", "x": size["calendar_x"], "y": size["calendar_y"]},
@@ -382,14 +535,19 @@ for widget in widgets:
 
 # Create widgets once
 calendar_widget = ctk.CTkLabel(root, text=calendar.month_name[time.localtime().tm_mon], font=("Arial", size["label_font_size"]))
+update_gif(calendar_widget, calendar_gif)
 weather_widget = ctk.CTkLabel(root, text=f"{temp} Degrees Celsius\n{clouds}% Cloudy", font=("Arial", size["label_font_size"]), fg_color=weather_color, text_color="Black")
-todo_widget = ctk.CTkLabel(root, text="1. Study\n2. Work on Project\n3. Exercise", font=("Arial", size["label_font_size"]), text_color="white")
-# todo_widget.pack(pady=10, padx=20, anchor="w")  # Left-align with padding
-todo_widget.bind("<Button-1>", lambda e: toggle_todo_list())  # Make the To-Do list clickable
-music_widget_button = ctk.CTkButton(root, text="Say: Open Music", font=("Arial", size["label_font_size"]), command=lambda: music_widget())
-smart_home_button = ctk.CTkButton(root, text="Smart Home", font=("Arial", size["label_font_size"]), command=lambda: create_smart_home_widget())
-settings_widget = ctk.CTkLabel(root, text="Volume: 50%\nBrightness: 80%", font=("Arial", size["label_font_size"]))
-ask_mirror_button = ctk.CTkButton(root, text="Say: 'Hey Vivi!'", font=("Arial", size["label_font_size"]), command=ask_mirror)
+todo_widget = ctk.CTkLabel(root, text="", font=("Arial", size["label_font_size"]), text_color="white")
+update_gif(todo_widget, todo_gif)
+music_widget_button = ctk.CTkButton(root, text="", image=music_icon, font=("Arial", size["label_font_size"]), command=lambda: music_widget())
+smart_home_button = ctk.CTkButton(root, text="", image=smart_home_gif.frames[0], font=("Arial", size["label_font_size"]), command=lambda: create_smart_home_widget())
+update_gif(smart_home_button, smart_home_gif)  # Animate the GIF
+settings_widget = ctk.CTkLabel(root, text="", font=("Arial", size["label_font_size"]))
+update_gif(settings_widget, settings_gif)
+ask_mirror_button = ctk.CTkButton(root, text="Say 'Hey Vivi!'", font=("Arial", size["label_font_size"]), command=ask_mirror)
+
+weather_open.place(x=420, y=50)
+news_open.place(x=420, y=150)
 
 # Function to show widgets using CustomTkinter
 def show_widgets():

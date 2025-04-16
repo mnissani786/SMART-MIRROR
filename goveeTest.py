@@ -5,9 +5,13 @@
 
 import requests
 import uuid
+from colortest import *
+
+ColorWorker = ColorWorker() #Creates an object of the ColorWorker class
 
 #Formula to convert to acceptable color values (From Govee API documentation)
 def colorConversion(red, green, blue):
+    ColorWorker.setColor(Color(red, green, blue)) #Sets the color of the LED strip
     value = ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | ((blue & 0xFF) << 0)
     print('Color value ' + str(value)) #debugging
     return value 
@@ -47,30 +51,30 @@ def changeLight(type, instance, value):
     print(response.text) #Debugging
 
 
-# def main():
-    ### Turns light on and off
-    ### 0 = off, 1 = on
-    # changeLight("devices.capabilities.on_off", "powerSwitch", 0)    #Off
-    # changeLight("devices.capabilities.on_off", "powerSwitch", 1)    #On
+def main():
+    ## Turns light on and off
+    ## 0 = off, 1 = on
+    #changeLight("devices.capabilities.on_off", "powerSwitch", 0)    #Off
+    #changeLight("devices.capabilities.on_off", "powerSwitch", 1)    #On
 
-    ### changes the color of the light
-    ### set r, g, b values 0-255 in colorConversion(r, g, b)
-    # changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(255, 0, 0)))    #Red
-    # changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 255, 0)))    #Green
-    # changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 0, 255)))    #Blue
+    ## changes the color of the light
+    ## set r, g, b values 0-255 in colorConversion(r, g, b)
+    changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 0, 255)))    #Red
+    #changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 255, 0)))    #Green
+    #changeLight("devices.capabilities.color_setting", "colorRgb", int(colorConversion(0, 0, 255)))    #Blue
 
-    ### Changes the white temperature of the light
-    ### My lamp uses temps between 2000k - 9000k, different models vary with their color temperature
-    # changeLight("devices.capabilities.color_setting", "colorTemperatureK", 2000)    #2000k - Warm white
-    # changeLight("devices.capabilities.color_setting", "colorTemperatureK", 5500)    #5500k - Pure white
-    # changeLight("devices.capabilities.color_setting", "colorTemperatureK", 9000)    #9000K - Cool white
+    ## Changes the white temperature of the light
+    ## My lamp uses temps between 2000k - 9000k, different models vary with their color temperature
+    #changeLight("devices.capabilities.color_setting", "colorTemperatureK", 2000)    #2000k - Warm white
+    #changeLight("devices.capabilities.color_setting", "colorTemperatureK", 5500)    #5500k - Pure white
+    #changeLight("devices.capabilities.color_setting", "colorTemperatureK", 9000)    #9000K - Cool white
 
-    ### Changes the brightness
-    ### percentage ranges from 0-100% brightness
-    # changeLight("devices.capabilities.range", "brightness", 10)    #10% brightness
-    # changeLight("devices.capabilities.range", "brightness", 50)    #50% brightness
-    # changeLight("devices.capabilities.range", "brightness", 100)   #100% brightness
+    ## Changes the brightness
+    ## percentage ranges from 0-100% brightness
+    #changeLight("devices.capabilities.range", "brightness", 10)    #10% brightness
+    #changeLight("devices.capabilities.range", "brightness", 50)    #50% brightness
+    #changeLight("devices.capabilities.range", "brightness", 100)   #100% brightness
 
-#if __name__ == "__main__":
-    #main()
+if __name__ == "__main__":
+    main()
 

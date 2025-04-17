@@ -2,8 +2,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 from dotenv import load_dotenv
 import os
-from gtts import gTTS
-from gtts.tokenizer.pre_processors import abbreviations, end_of_line
 from pygame import mixer
 import time
 
@@ -23,16 +21,6 @@ def batch():
     chain = prompt | chat
     text = (chain.invoke({"text": "Explain the importance of low latency LLMs."}))
     print(text.content)
-
-
-    tts = gTTS(text=text.content, lang='en', slow=False, pre_processor_funcs=[abbreviations, end_of_line])
-
-    tts.save("output.mp3")
-
-    mixer.init()
-    mixer.music.load("output.mp3")
-    mixer.music.play()
-    time.sleep(10)
 
 # Streaming
 def streaming():

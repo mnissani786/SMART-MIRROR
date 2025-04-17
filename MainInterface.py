@@ -14,10 +14,10 @@ from Smile import SmileAnimation
 from event_manager import event_manager
 from smarthome import SmartHome
 import musicTest
-from musicTest import MusicPlayer 
+from musicTest import MusicPlayer
 
 #made a flag to help me develop
-Developing = True
+Developing = False
 
 # Utility Classes
 class AnimatedGIF:

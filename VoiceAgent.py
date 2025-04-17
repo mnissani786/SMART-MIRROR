@@ -5,7 +5,7 @@ import subprocess
 import requests
 import time
 import os
-
+import sys
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 from langchain.memory import ConversationBufferMemory
@@ -250,6 +250,11 @@ class ConversationManager:
                     print("Closing weather...")
                     tts.speak("Closing weather.")
                     event_manager.trigger_event("close_weather_widget")
+                
+                if "exit smart mirror" in self.transcription_response.lower():
+                    print("Exiting the smart mirror application...")
+                    tts.speak("Goodbye! Exiting the smart mirror.")
+                    sys.exit()  # Terminate the script
             
                 if On_SmartHome:
                     if "red" in self.transcription_response.lower():

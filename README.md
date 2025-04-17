@@ -3,9 +3,13 @@
 By Kaeden Bryer, Christina Carvalho, Maria Echeverri Solis and Malik Issani
 For CSI2999 at Oakland University
 
+
 Kaeden Bryer –– kaeden-bryer
+
 Christina Carvalho –– ChristinaCarvalho
+
 Maria Echeverri Solis –– MariEche
+
 Malik Issani –– mnissani786
 
 ## About

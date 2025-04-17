@@ -65,6 +65,9 @@ As of submitting, this requirements.txt should be up to date with pip freeze > r
 
 "Exit News" -- Exits News Widget
 
+### Smart Mirror🪞
+"Close Smart Mirror" -- Terminates Program
+
 
 ## Goals:
 #### 1. Make Functioning widgets that gather data and respond to user inputs🛜
